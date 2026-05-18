@@ -12,7 +12,7 @@ export function ProjectCard({ project }: { project: Project }) {
           </h2>
           <ArrowRight className="h-4 w-4 shrink-0 text-muted opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" />
         </div>
-        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted">
+        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-foreground/80">
           {project.description}
         </p>
         {project.stack.length > 0 && (

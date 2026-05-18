@@ -21,7 +21,7 @@ export async function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-background/80 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 border-b border-border bg-background">
       <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-5 sm:px-8">
         <Link
           href="/"
@@ -37,7 +37,7 @@ export async function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="hidden rounded-md px-2.5 py-1.5 font-mono text-xs text-muted transition-colors hover:bg-card hover:text-foreground sm:inline-block"
+              className="hidden rounded-md px-2.5 py-1.5 font-mono text-xs text-foreground/75 transition-colors hover:bg-card hover:text-foreground sm:inline-block"
             >
               {item.label}
             </Link>
@@ -53,7 +53,7 @@ export async function Header() {
             <form action="/auth/signout" method="post" className="ml-0.5">
               <button
                 type="submit"
-                className="rounded-md px-2 py-1.5 font-mono text-xs text-muted transition-colors hover:text-foreground"
+                className="rounded-md px-2 py-1.5 font-mono text-xs text-foreground/75 transition-colors hover:text-foreground"
               >
                 {t.nav.logout}
               </button>
@@ -61,7 +61,7 @@ export async function Header() {
           ) : (
             <Link
               href="/login"
-              className="ml-0.5 rounded-md px-2 py-1.5 font-mono text-xs text-muted transition-colors hover:text-foreground"
+              className="ml-0.5 rounded-md px-2 py-1.5 font-mono text-xs text-foreground/75 transition-colors hover:text-foreground"
             >
               {t.nav.login}
             </Link>

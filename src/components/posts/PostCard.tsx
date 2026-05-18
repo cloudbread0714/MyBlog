@@ -25,7 +25,7 @@ export function PostCard({
           <time className="font-mono text-xs text-muted">
             {formatDate(post.created_at, locale)}
           </time>
-          <h2 className="mt-1.5 text-base font-semibold leading-snug tracking-tight transition-colors group-hover:text-accent">
+          <h2 className="mt-1.5 text-base font-semibold leading-snug tracking-tight text-foreground transition-colors group-hover:text-accent">
             {post.title}
           </h2>
           {post.tags.length > 0 && (

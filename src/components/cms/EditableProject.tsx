@@ -129,7 +129,7 @@ export function EditableProject({
       )}
       <header className="mt-4 border-b border-border pb-8">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{displayName}</h1>
-        <p className="mt-4 text-lg text-muted">{displayDescription}</p>
+        <p className="mt-4 text-lg text-foreground/85">{displayDescription}</p>
         {displayRole && (
           <p className="mt-3 text-sm">
             <span className="font-medium">{labels.role}</span> · {displayRole}
