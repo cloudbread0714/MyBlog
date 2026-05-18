@@ -2,6 +2,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { EditablePost } from "@/components/cms/EditablePost";
 import { getIsAdmin } from "@/lib/auth";
+import { getDictionary } from "@/i18n/dictionary";
+import { getLocale } from "@/i18n/locale";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, readingTime } from "@/lib/utils";
 
@@ -10,17 +12,21 @@ type Props = { params: Promise<{ id: string }> };
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const supabase = await createClient();
-  const { data } = await supabase.from("posts").select("title").eq("id", id).single();
-  return { title: data ? `${data.title} | Dev Blog` : "글 | Dev Blog" };
+  const { data } = await supabase.from("posts").select("title, title_en").eq("id", id).single();
+  const locale = await getLocale();
+  const title =
+    locale === "en" && data?.title_en?.trim() ? data.title_en : data?.title;
+  return { title: title ? `${title} | Dev Blog` : "글 | Dev Blog" };
 }
 
 export default async function PostDetailPage({ params }: Props) {
   const { id } = await params;
+  const locale = await getLocale();
+  const t = getDictionary(locale);
   const supabase = await createClient();
-  const [isAdmin, { data: post }] = await Promise.all([
-    getIsAdmin(),
-    supabase.from("posts").select("*").eq("id", id).single(),
-  ]);
+  const isAdmin = await getIsAdmin();
+
+  const { data: post } = await supabase.from("posts").select("*").eq("id", id).single();
 
   if (!post) notFound();
 
@@ -35,14 +41,18 @@ export default async function PostDetailPage({ params }: Props) {
         href="/posts"
         className="inline-flex items-center gap-1 font-mono text-xs text-muted transition-colors hover:text-accent"
       >
-        ← Posts
+        ← {t.posts.back}
       </Link>
       <div className="mt-6 flex flex-wrap items-center gap-2 font-mono text-xs text-muted">
-        <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
+        <time dateTime={post.created_at}>{formatDate(post.created_at, locale)}</time>
         <span>·</span>
-        <span>약 {readingTime(post.content)}분 읽기</span>
+        <span>
+          {readingTime(post.content)} {t.posts.readMin}
+        </span>
         <span>·</span>
-        <span>조회 {post.views + 1}</span>
+        <span>
+          {t.posts.views} {post.views + 1}
+        </span>
         {post.tags.length > 0 && (
           <ul className="flex flex-wrap gap-2">
             {post.tags.map((tag: string) => (
@@ -56,7 +66,12 @@ export default async function PostDetailPage({ params }: Props) {
           </ul>
         )}
       </div>
-      <EditablePost post={post} isAdmin={isAdmin} />
+      <EditablePost
+        post={post}
+        locale={locale}
+        isAdmin={isAdmin}
+        labels={{ ...t.editor, ...t.posts }}
+      />
     </article>
   );
 }

@@ -5,7 +5,9 @@ create extension if not exists "uuid-ossp";
 create table if not exists posts (
   id uuid primary key default uuid_generate_v4(),
   title text not null,
+  title_en text,
   content text not null default '',
+  content_en text,
   tags text[] not null default '{}',
   thumbnail text,
   views integer not null default 0,
@@ -16,16 +18,21 @@ create table if not exists posts (
 create table if not exists page_contents (
   slug text primary key,
   content text not null default '',
+  content_en text not null default '',
   updated_at timestamptz not null default now()
 );
 
 create table if not exists projects (
   id uuid primary key default uuid_generate_v4(),
   name text not null,
+  name_en text,
   description text not null default '',
+  description_en text,
   stack text[] not null default '{}',
   role text not null default '',
+  role_en text,
   content text not null default '',
+  content_en text,
   images text[] not null default '{}',
   github_url text,
   featured boolean not null default false,

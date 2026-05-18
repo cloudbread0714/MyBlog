@@ -2,9 +2,19 @@
 
 import { useMemo, useState } from "react";
 import { PostCard } from "@/components/posts/PostCard";
+import type { Locale } from "@/i18n/config";
+import type { Dictionary } from "@/i18n/dictionary";
 import type { Post } from "@/types/database";
 
-export function PostsList({ posts }: { posts: Post[] }) {
+export function PostsList({
+  posts,
+  locale,
+  labels,
+}: {
+  posts: Post[];
+  locale: Locale;
+  labels: Dictionary["posts"];
+}) {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -29,7 +39,7 @@ export function PostsList({ posts }: { posts: Post[] }) {
       <div className="mb-8 space-y-4">
         <input
           type="search"
-          placeholder="Search posts…"
+          placeholder={labels.search}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="w-full rounded-lg border border-border bg-card px-4 py-2.5 font-mono text-sm placeholder:text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-[var(--ring)] sm:max-w-sm"
@@ -45,7 +55,7 @@ export function PostsList({ posts }: { posts: Post[] }) {
                   : "border-border text-muted hover:border-muted hover:text-foreground"
               }`}
             >
-              All
+              {labels.all}
             </button>
             {allTags.map((tag) => (
               <button
@@ -68,13 +78,15 @@ export function PostsList({ posts }: { posts: Post[] }) {
       <ul className="flex flex-col gap-3">
         {filtered.map((post) => (
           <li key={post.id}>
-            <PostCard post={post} />
+            <PostCard post={post} locale={locale} labels={labels} />
           </li>
         ))}
       </ul>
 
       {filtered.length === 0 && (
-        <p className="py-16 text-center font-mono text-sm text-muted">No results.</p>
+        <p className="py-16 text-center font-mono text-sm text-muted">
+          {labels.noResults}
+        </p>
       )}
     </div>
   );

@@ -1,19 +1,24 @@
 import Link from "next/link";
+import { LanguageToggle } from "@/components/layout/LanguageToggle";
 import { ThemeToggle } from "@/components/layout/ThemeToggle";
+import { getDictionary } from "@/i18n/dictionary";
+import { getLocale } from "@/i18n/locale";
 import { createClient } from "@/lib/supabase/server";
-
-const nav = [
-  { href: "/", label: "Home" },
-  { href: "/posts", label: "Posts" },
-  { href: "/projects", label: "Projects" },
-  { href: "/about", label: "About" },
-];
 
 export async function Header() {
   const supabase = await createClient();
+  const locale = await getLocale();
+  const t = getDictionary(locale);
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
+  const nav = [
+    { href: "/", label: t.nav.home },
+    { href: "/posts", label: t.nav.posts },
+    { href: "/projects", label: t.nav.projects },
+    { href: "/about", label: t.nav.about },
+  ];
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/80 backdrop-blur-lg">
@@ -39,9 +44,10 @@ export async function Header() {
           ))}
           {user && (
             <Link href="/write" className="btn-primary ml-1 !py-1.5 !text-xs">
-              Write
+              {t.nav.write}
             </Link>
           )}
+          <LanguageToggle locale={locale} />
           <ThemeToggle />
           {user ? (
             <form action="/auth/signout" method="post" className="ml-0.5">
@@ -49,7 +55,7 @@ export async function Header() {
                 type="submit"
                 className="rounded-md px-2 py-1.5 font-mono text-xs text-muted transition-colors hover:text-foreground"
               >
-                Out
+                {t.nav.logout}
               </button>
             </form>
           ) : (
@@ -57,7 +63,7 @@ export async function Header() {
               href="/login"
               className="ml-0.5 rounded-md px-2 py-1.5 font-mono text-xs text-muted transition-colors hover:text-foreground"
             >
-              In
+              {t.nav.login}
             </Link>
           )}
         </nav>

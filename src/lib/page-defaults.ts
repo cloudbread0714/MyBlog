@@ -1,3 +1,5 @@
+import type { Locale } from "@/i18n/config";
+
 export const PAGE_SLUGS = {
   home: "home",
   about: "about",
@@ -29,3 +31,30 @@ export const PAGE_DEFAULTS: Record<PageSlug, string> = {
   projects: `<h1>프로젝트</h1>
 <p>직접 만들고 참여한 프로젝트입니다.</p>`,
 };
+
+export const PAGE_DEFAULTS_EN: Record<PageSlug, string> = {
+  home: `<p class="section-eyebrow">Developer Blog</p>
+<h1>Hello,<br/>I'm Yujin.</h1>
+<p>A portfolio of projects, problem-solving notes, and learning logs.</p>`,
+  about: `<h1>About</h1>
+<p>Frontend developer focused on user experience and code quality. This site documents projects, learning, and how I solve problems.</p>
+<h2>Stack</h2>
+<ul>
+<li>TypeScript</li>
+<li>React</li>
+<li>Next.js</li>
+<li>Node.js</li>
+<li>Supabase</li>
+<li>Tailwind CSS</li>
+</ul>
+<h2>Links</h2>
+<p><a href="https://github.com/cloudbread0714" target="_blank" rel="noopener noreferrer">GitHub</a></p>`,
+  posts: `<h1>Posts</h1>
+<p>Notes on what I build and learn.</p>`,
+  projects: `<h1>Projects</h1>
+<p>Things I've built and contributed to.</p>`,
+};
+
+export function getPageDefault(slug: PageSlug, locale: Locale): string {
+  return locale === "en" ? PAGE_DEFAULTS_EN[slug] : PAGE_DEFAULTS[slug];
+}

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
+import type { Dictionary } from "@/i18n/dictionary";
 import { createClient } from "@/lib/supabase/client";
 
 const TiptapEditor = dynamic(
@@ -13,15 +14,17 @@ const TiptapEditor = dynamic(
   },
 );
 
-const DRAFT_KEY = "post-draft";
+const DRAFT_KEY = "post-draft-v2";
 
-export function PostEditor() {
+export function PostEditor({ labels }: { labels: Dictionary["editor"] }) {
   const router = useRouter();
   const draftId = useId().replace(/:/g, "");
   const postId = `draft-${draftId}`;
 
   const [title, setTitle] = useState("");
+  const [titleEn, setTitleEn] = useState("");
   const [content, setContent] = useState("");
+  const [contentEn, setContentEn] = useState("");
   const [tagsInput, setTagsInput] = useState("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
@@ -30,14 +33,12 @@ export function PostEditor() {
     const saved = localStorage.getItem(DRAFT_KEY);
     if (saved) {
       try {
-        const draft = JSON.parse(saved) as {
-          title: string;
-          content: string;
-          tagsInput: string;
-        };
-        setTitle(draft.title);
-        setContent(draft.content);
-        setTagsInput(draft.tagsInput);
+        const draft = JSON.parse(saved) as Record<string, string>;
+        setTitle(draft.title ?? "");
+        setTitleEn(draft.titleEn ?? "");
+        setContent(draft.content ?? "");
+        setContentEn(draft.contentEn ?? "");
+        setTagsInput(draft.tagsInput ?? "");
       } catch {
         /* ignore */
       }
@@ -48,15 +49,15 @@ export function PostEditor() {
     const timer = setTimeout(() => {
       localStorage.setItem(
         DRAFT_KEY,
-        JSON.stringify({ title, content, tagsInput }),
+        JSON.stringify({ title, titleEn, content, contentEn, tagsInput }),
       );
     }, 1500);
     return () => clearTimeout(timer);
-  }, [title, content, tagsInput]);
+  }, [title, titleEn, content, contentEn, tagsInput]);
 
   const handleSave = useCallback(async () => {
     if (!title.trim()) {
-      setMessage("제목을 입력해 주세요.");
+      setMessage(labels.title);
       return;
     }
 
@@ -71,7 +72,14 @@ export function PostEditor() {
 
     const { data, error } = await supabase
       .from("posts")
-      .insert({ title: title.trim(), content, tags, thumbnail: null })
+      .insert({
+        title: title.trim(),
+        title_en: titleEn.trim() || null,
+        content,
+        content_en: contentEn.trim() || null,
+        tags,
+        thumbnail: null,
+      })
       .select("id")
       .single();
 
@@ -85,58 +93,49 @@ export function PostEditor() {
     localStorage.removeItem(DRAFT_KEY);
     router.push(`/posts/${data.id}`);
     router.refresh();
-  }, [title, content, tagsInput, router]);
+  }, [title, titleEn, content, contentEn, tagsInput, router, labels.title]);
+
+  const inputClass =
+    "w-full rounded-lg border border-border bg-card px-4 py-2.5 focus:border-accent focus:outline-none";
 
   return (
     <div className="max-w-3xl">
-      <h1 className="text-3xl font-bold">글 작성</h1>
-      <p className="mt-2 text-sm text-muted">
-        이미지는 버튼, 드래그 앤 드롭, Ctrl+V 붙여넣기로 삽입할 수 있습니다.
-      </p>
+      <h1 className="text-3xl font-bold">{labels.writeTitle}</h1>
+      <p className="mt-2 text-sm text-muted">{labels.writeHint}</p>
+      <p className="mt-1 font-mono text-xs text-muted">{labels.fallbackNote}</p>
 
       <div className="mt-8 space-y-5">
         <div>
-          <label className="mb-1.5 block text-sm font-medium">제목</label>
-          <input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card px-4 py-2.5 focus:border-accent focus:outline-none"
-            placeholder="글 제목"
-          />
+          <label className="mb-1.5 block font-mono text-xs text-muted">{labels.title}</label>
+          <input value={title} onChange={(e) => setTitle(e.target.value)} className={inputClass} />
         </div>
-
         <div>
-          <label className="mb-1.5 block text-sm font-medium">
-            태그 (쉼표로 구분)
-          </label>
-          <input
-            value={tagsInput}
-            onChange={(e) => setTagsInput(e.target.value)}
-            className="w-full rounded-lg border border-border bg-card px-4 py-2.5 focus:border-accent focus:outline-none"
-            placeholder="React, TypeScript"
-          />
+          <label className="mb-1.5 block font-mono text-xs text-muted">{labels.englishTitle}</label>
+          <input value={titleEn} onChange={(e) => setTitleEn(e.target.value)} className={inputClass} />
         </div>
-
         <div>
-          <label className="mb-1.5 block text-sm font-medium">본문</label>
+          <label className="mb-1.5 block font-mono text-xs text-muted">{labels.tags}</label>
+          <input value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} className={inputClass} />
+        </div>
+        <div>
+          <label className="mb-1.5 block font-mono text-xs text-muted">{labels.body}</label>
+          <TiptapEditor content={content} onChange={setContent} uploadContext={{ type: "post", id: postId }} />
+        </div>
+        <div>
+          <label className="mb-1.5 block font-mono text-xs text-muted">{labels.englishBody}</label>
           <TiptapEditor
-            content={content}
-            onChange={setContent}
-            uploadContext={{ type: "post", id: postId }}
+            content={contentEn}
+            onChange={setContentEn}
+            uploadContext={{ type: "post", id: `${postId}-en` }}
           />
         </div>
       </div>
 
       {message && <p className="text-sm text-red-500">{message}</p>}
 
-      <div className="mt-6 flex gap-3">
-        <button
-          type="button"
-          onClick={handleSave}
-          disabled={saving}
-          className="rounded-lg bg-accent px-6 py-2.5 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
-        >
-          {saving ? "저장 중…" : "발행하기"}
+      <div className="mt-6">
+        <button type="button" onClick={handleSave} disabled={saving} className="btn-primary disabled:opacity-50">
+          {saving ? labels.saving : labels.publish}
         </button>
       </div>
     </div>

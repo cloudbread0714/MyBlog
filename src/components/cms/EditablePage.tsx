@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ProseContent } from "@/components/content/ProseContent";
 import { createClient } from "@/lib/supabase/client";
+import type { Locale } from "@/i18n/config";
 import type { PageSlug } from "@/lib/page-defaults";
+import { pickLocalized } from "@/i18n/content";
 
 const TiptapEditor = dynamic(
   () => import("@/components/editor/TiptapEditor").then((m) => m.TiptapEditor),
@@ -15,22 +17,32 @@ const TiptapEditor = dynamic(
 
 type EditablePageProps = {
   slug: PageSlug;
-  initialContent: string;
+  initialContentKo: string;
+  initialContentEn: string;
+  locale: Locale;
   isAdmin: boolean;
+  labels: { editSection: string; save: string; saving: string; cancel: string; korean: string; english: string; fallbackNote: string };
   className?: string;
 };
 
 export function EditablePage({
   slug,
-  initialContent,
+  initialContentKo,
+  initialContentEn,
+  locale,
   isAdmin,
+  labels,
   className = "",
 }: EditablePageProps) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
-  const [content, setContent] = useState(initialContent);
+  const [editLocale, setEditLocale] = useState<Locale>("ko");
+  const [contentKo, setContentKo] = useState(initialContentKo);
+  const [contentEn, setContentEn] = useState(initialContentEn);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  const displayHtml = pickLocalized(contentKo, contentEn, locale);
 
   const handleSave = async () => {
     setSaving(true);
@@ -38,7 +50,10 @@ export function EditablePage({
     const supabase = createClient();
     const { error: saveError } = await supabase
       .from("page_contents")
-      .upsert({ slug, content }, { onConflict: "slug" });
+      .upsert(
+        { slug, content: contentKo, content_en: contentEn },
+        { onConflict: "slug" },
+      );
 
     setSaving(false);
     if (saveError) {
@@ -50,7 +65,8 @@ export function EditablePage({
   };
 
   const handleCancel = () => {
-    setContent(initialContent);
+    setContentKo(initialContentKo);
+    setContentEn(initialContentEn);
     setEditing(false);
     setError("");
   };
@@ -58,27 +74,32 @@ export function EditablePage({
   if (editing) {
     return (
       <div className={className}>
+        <div className="mb-4 flex gap-1 rounded-md border border-border p-0.5 font-mono text-[10px]">
+          {(["ko", "en"] as const).map((code) => (
+            <button
+              key={code}
+              type="button"
+              onClick={() => setEditLocale(code)}
+              className={`rounded px-3 py-1 uppercase ${editLocale === code ? "bg-foreground text-background" : "text-muted"}`}
+            >
+              {code === "ko" ? labels.korean : labels.english}
+            </button>
+          ))}
+        </div>
+        <p className="mb-3 font-mono text-xs text-muted">{labels.fallbackNote}</p>
         <TiptapEditor
-          content={content}
-          onChange={setContent}
-          uploadContext={{ type: "page", slug }}
+          key={editLocale}
+          content={editLocale === "ko" ? contentKo : contentEn}
+          onChange={editLocale === "ko" ? setContentKo : setContentEn}
+          uploadContext={{ type: "page", slug: `${slug}-${editLocale}` }}
         />
         {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
         <div className="mt-4 flex gap-2">
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-          >
-            {saving ? "저장 중…" : "저장"}
+          <button type="button" onClick={handleSave} disabled={saving} className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white disabled:opacity-50">
+            {saving ? labels.saving : labels.save}
           </button>
-          <button
-            type="button"
-            onClick={handleCancel}
-            className="rounded-lg border border-border px-4 py-2 text-sm"
-          >
-            취소
+          <button type="button" onClick={handleCancel} className="rounded-lg border border-border px-4 py-2 text-sm">
+            {labels.cancel}
           </button>
         </div>
       </div>
@@ -88,16 +109,12 @@ export function EditablePage({
   return (
     <div className={`group relative ${className}`}>
       {isAdmin && (
-        <button
-          type="button"
-          onClick={() => setEditing(true)}
-          className="mb-6 inline-flex items-center gap-1.5 rounded-md border border-dashed border-border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-muted transition-colors hover:border-accent hover:text-accent"
-        >
+        <button type="button" onClick={() => setEditing(true)} className="mb-6 inline-flex items-center gap-1.5 rounded-md border border-dashed border-border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-muted transition-colors hover:border-accent hover:text-accent">
           <Pencil className="h-3 w-3" />
-          Edit
+          {labels.editSection}
         </button>
       )}
-      <ProseContent html={content} />
+      <ProseContent html={displayHtml} />
     </div>
   );
 }

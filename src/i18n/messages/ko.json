@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "home": "홈",
+    "posts": "글",
+    "projects": "프로젝트",
+    "about": "소개",
+    "write": "글쓰기",
+    "login": "로그인",
+    "logout": "로그아웃"
+  },
+  "home": {
+    "recentPosts": "최신 글",
+    "featuredProjects": "대표 프로젝트",
+    "viewAll": "전체 보기",
+    "noPosts": "아직 작성된 글이 없습니다.",
+    "noProjects": "아직 등록된 프로젝트가 없습니다.",
+    "projectsBtn": "프로젝트 보기",
+    "aboutBtn": "소개"
+  },
+  "posts": {
+    "label": "Writing",
+    "title": "글",
+    "search": "글 검색…",
+    "all": "전체",
+    "noResults": "검색 결과가 없습니다.",
+    "back": "글 목록",
+    "readMin": "분 읽기",
+    "views": "조회",
+    "editPost": "글 수정"
+  },
+  "projects": {
+    "label": "Work",
+    "title": "프로젝트",
+    "new": "새 프로젝트",
+    "noProjects": "아직 등록된 프로젝트가 없습니다.",
+    "back": "프로젝트 목록",
+    "role": "역할",
+    "editProject": "프로젝트 수정"
+  },
+  "auth": {
+    "admin": "관리자",
+    "signIn": "로그인",
+    "signInDesc": "글 작성 및 프로젝트 관리",
+    "email": "이메일",
+    "password": "비밀번호",
+    "submit": "로그인",
+    "submitting": "로그인 중…"
+  },
+  "editor": {
+    "edit": "수정",
+    "editSection": "이 영역 수정",
+    "save": "저장",
+    "saving": "저장 중…",
+    "cancel": "취소",
+    "publish": "발행하기",
+    "title": "제목",
+    "summary": "한 줄 소개",
+    "tags": "태그 (쉼표로 구분)",
+    "body": "본문",
+    "writeTitle": "글 작성",
+    "writeHint": "이미지는 버튼, 드래그 앤 드롭, Ctrl+V 붙여넣기로 삽입할 수 있습니다.",
+    "korean": "한국어",
+    "english": "English",
+    "englishOptional": "영문 (선택)",
+    "englishTitle": "영문 제목",
+    "englishBody": "영문 본문",
+    "fallbackNote": "영문이 비어 있으면 한국어가 표시됩니다."
+  },
+  "footer": {
+    "built": "Next.js + Supabase"
+  },
+  "locale": {
+    "ko": "한국어",
+    "en": "English"
+  }
+}

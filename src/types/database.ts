@@ -1,7 +1,9 @@
 export type Post = {
   id: string;
   title: string;
+  title_en?: string | null;
   content: string;
+  content_en?: string | null;
   tags: string[];
   thumbnail: string | null;
   views: number;
@@ -12,10 +14,14 @@ export type Post = {
 export type Project = {
   id: string;
   name: string;
+  name_en?: string | null;
   description: string;
+  description_en?: string | null;
   stack: string[];
   role: string;
+  role_en?: string | null;
   content: string;
+  content_en?: string | null;
   images: string[];
   github_url: string | null;
   featured: boolean;
@@ -26,6 +32,7 @@ export type Project = {
 export type PageContent = {
   slug: string;
   content: string;
+  content_en: string;
   updated_at: string;
 };
 

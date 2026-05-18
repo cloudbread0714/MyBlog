@@ -1,9 +1,20 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import type { Locale } from "@/i18n/config";
 import type { Post } from "@/types/database";
 import { formatDate, readingTime } from "@/lib/utils";
 
-export function PostCard({ post }: { post: Post }) {
+type PostLabels = { readMin: string };
+
+export function PostCard({
+  post,
+  locale,
+  labels,
+}: {
+  post: Post;
+  locale: Locale;
+  labels: PostLabels;
+}) {
   return (
     <article className="card group">
       <Link
@@ -12,7 +23,7 @@ export function PostCard({ post }: { post: Post }) {
       >
         <div className="min-w-0 flex-1">
           <time className="font-mono text-xs text-muted">
-            {formatDate(post.created_at)}
+            {formatDate(post.created_at, locale)}
           </time>
           <h2 className="mt-1.5 text-base font-semibold leading-snug tracking-tight transition-colors group-hover:text-accent">
             {post.title}
@@ -31,7 +42,7 @@ export function PostCard({ post }: { post: Post }) {
           )}
         </div>
         <span className="flex shrink-0 items-center gap-1 font-mono text-xs text-muted sm:pt-6">
-          {readingTime(post.content)} min
+          {readingTime(post.content)} {labels.readMin}
           <ArrowRight className="h-3.5 w-3.5 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100" />
         </span>
       </Link>

@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "home": "Home",
+    "posts": "Posts",
+    "projects": "Projects",
+    "about": "About",
+    "write": "Write",
+    "login": "Sign in",
+    "logout": "Sign out"
+  },
+  "home": {
+    "recentPosts": "Recent posts",
+    "featuredProjects": "Featured projects",
+    "viewAll": "View all",
+    "noPosts": "No posts yet.",
+    "noProjects": "No projects yet.",
+    "projectsBtn": "Projects",
+    "aboutBtn": "About"
+  },
+  "posts": {
+    "label": "Writing",
+    "title": "Posts",
+    "search": "Search posts…",
+    "all": "All",
+    "noResults": "No results.",
+    "back": "Posts",
+    "readMin": "min read",
+    "views": "views",
+    "editPost": "Edit post"
+  },
+  "projects": {
+    "label": "Work",
+    "title": "Projects",
+    "new": "New project",
+    "noProjects": "No projects yet.",
+    "back": "Projects",
+    "role": "Role",
+    "editProject": "Edit project"
+  },
+  "auth": {
+    "admin": "Admin",
+    "signIn": "Sign in",
+    "signInDesc": "Manage posts & projects",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…"
+  },
+  "editor": {
+    "edit": "Edit",
+    "editSection": "Edit section",
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "publish": "Publish",
+    "title": "Title",
+    "summary": "Summary",
+    "tags": "Tags (comma-separated)",
+    "body": "Body",
+    "writeTitle": "Write post",
+    "writeHint": "Insert images via button, drag & drop, or Ctrl+V.",
+    "korean": "한국어",
+    "english": "English",
+    "englishOptional": "English (optional)",
+    "englishTitle": "English title",
+    "englishBody": "English body",
+    "fallbackNote": "Korean is shown when English is empty."
+  },
+  "footer": {
+    "built": "Next.js + Supabase"
+  },
+  "locale": {
+    "ko": "한국어",
+    "en": "English"
+  }
+}
