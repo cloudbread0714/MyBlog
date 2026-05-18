@@ -25,8 +25,11 @@ export default async function ProjectDetailPage({ params }: Props) {
 
   return (
     <article className="max-w-3xl">
-      <Link href="/projects" className="text-sm text-accent hover:underline">
-        ← 프로젝트 목록
+      <Link
+        href="/projects"
+        className="inline-flex items-center gap-1 font-mono text-xs text-muted transition-colors hover:text-accent"
+      >
+        ← Projects
       </Link>
 
       {project.images.length > 0 && (

@@ -106,7 +106,7 @@ export function TiptapEditor({
   if (!editor) return null;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm">
+    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm ring-1 ring-black/[0.03] dark:ring-white/[0.05]">
       <EditorToolbar editor={editor} onImageUpload={handleImageUpload} />
       <EditorContent editor={editor} />
     </div>

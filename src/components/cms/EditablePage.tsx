@@ -91,10 +91,10 @@ export function EditablePage({
         <button
           type="button"
           onClick={() => setEditing(true)}
-          className="mb-4 inline-flex items-center gap-1.5 rounded-lg border border-dashed border-accent/50 bg-accent-soft/50 px-3 py-1.5 text-sm text-accent opacity-80 transition-opacity hover:opacity-100"
+          className="mb-6 inline-flex items-center gap-1.5 rounded-md border border-dashed border-border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-muted transition-colors hover:border-accent hover:text-accent"
         >
-          <Pencil className="h-3.5 w-3.5" />
-          이 영역 수정
+          <Pencil className="h-3 w-3" />
+          Edit
         </button>
       )}
       <ProseContent html={content} />

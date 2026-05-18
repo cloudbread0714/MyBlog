@@ -26,36 +26,36 @@ export function PostsList({ posts }: { posts: Post[] }) {
 
   return (
     <div>
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+      <div className="mb-8 space-y-4">
         <input
           type="search"
-          placeholder="글 검색…"
+          placeholder="Search posts…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full rounded-lg border border-border bg-card px-4 py-2.5 text-sm focus:border-accent focus:outline-none sm:max-w-xs"
+          className="w-full rounded-lg border border-border bg-card px-4 py-2.5 font-mono text-sm placeholder:text-muted focus:border-accent focus:outline-none focus:ring-2 focus:ring-[var(--ring)] sm:max-w-sm"
         />
         {allTags.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             <button
               type="button"
               onClick={() => setActiveTag(null)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              className={`rounded border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide transition-colors ${
                 !activeTag
-                  ? "bg-accent text-white"
-                  : "bg-card text-muted hover:text-foreground"
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border text-muted hover:border-muted hover:text-foreground"
               }`}
             >
-              전체
+              All
             </button>
             {allTags.map((tag) => (
               <button
                 key={tag}
                 type="button"
                 onClick={() => setActiveTag(tag)}
-                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                className={`rounded border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide transition-colors ${
                   activeTag === tag
-                    ? "bg-accent text-white"
-                    : "bg-card text-muted hover:text-foreground"
+                    ? "border-accent bg-accent-soft text-accent"
+                    : "border-border text-muted hover:border-muted hover:text-foreground"
                 }`}
               >
                 {tag}
@@ -65,7 +65,7 @@ export function PostsList({ posts }: { posts: Post[] }) {
         )}
       </div>
 
-      <ul className="grid gap-4 sm:grid-cols-2">
+      <ul className="flex flex-col gap-3">
         {filtered.map((post) => (
           <li key={post.id}>
             <PostCard post={post} />
@@ -74,7 +74,7 @@ export function PostsList({ posts }: { posts: Post[] }) {
       </ul>
 
       {filtered.length === 0 && (
-        <p className="py-12 text-center text-muted">검색 결과가 없습니다.</p>
+        <p className="py-16 text-center font-mono text-sm text-muted">No results.</p>
       )}
     </div>
   );

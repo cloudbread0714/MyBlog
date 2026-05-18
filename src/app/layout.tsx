@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import "./globals.css";
 
-const geist = Geist({
+const geistSans = Geist({
   variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -20,15 +25,20 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ko" suppressHydrationWarning>
-      <body className={`${geist.variable} min-h-screen antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
+      >
         <ThemeProvider>
-          <Header />
-          <main className="mx-auto min-h-[calc(100vh-8rem)] max-w-5xl px-4 py-10 sm:px-6">
-            {children}
-          </main>
-          <Footer />
+          <div className="bg-grid min-h-screen">
+            <Header />
+            <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-3xl px-5 py-12 sm:px-8">
+              {children}
+            </main>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+

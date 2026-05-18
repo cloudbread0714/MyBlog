@@ -8,9 +8,9 @@ export const PAGE_SLUGS = {
 export type PageSlug = (typeof PAGE_SLUGS)[keyof typeof PAGE_SLUGS];
 
 export const PAGE_DEFAULTS: Record<PageSlug, string> = {
-  home: `<p class="text-sm font-medium text-accent">Developer Portfolio</p>
+  home: `<p class="section-eyebrow">Developer Blog</p>
 <h1>안녕하세요,<br/>개발자 Yujin입니다.</h1>
-<p>프로젝트 경험, 문제 해결 과정, 학습 기록을 정리하는 공간입니다. 취업 포트폴리오이자 개발 아카이브입니다.</p>`,
+<p>프로젝트 경험, 문제 해결 과정, 학습 기록을 정리하는 공간입니다.</p>`,
   about: `<h1>개발자 소개</h1>
 <p>사용자 경험과 코드 품질을 함께 고민하는 프론트엔드 개발자입니다. 이 블로그는 프로젝트 경험, 기술 학습, 문제 해결 과정을 기록하는 포트폴리오 공간입니다.</p>
 <h2>기술 스택</h2>

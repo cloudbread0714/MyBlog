@@ -31,10 +31,13 @@ export default async function PostDetailPage({ params }: Props) {
 
   return (
     <article className="max-w-3xl">
-      <Link href="/posts" className="text-sm text-accent hover:underline">
-        ← 글 목록
+      <Link
+        href="/posts"
+        className="inline-flex items-center gap-1 font-mono text-xs text-muted transition-colors hover:text-accent"
+      >
+        ← Posts
       </Link>
-      <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted">
+      <div className="mt-6 flex flex-wrap items-center gap-2 font-mono text-xs text-muted">
         <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
         <span>·</span>
         <span>약 {readingTime(post.content)}분 읽기</span>
