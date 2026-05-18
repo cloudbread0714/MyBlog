@@ -1,10 +1,3 @@
-export type PostCategory =
-  | "study"
-  | "devlog"
-  | "project"
-  | "troubleshooting"
-  | "etc";
-
 export type ProjectKind = "project" | "education";
 
 export type Post = {
@@ -13,7 +6,7 @@ export type Post = {
   title_en?: string | null;
   content: string;
   content_en?: string | null;
-  category: PostCategory;
+  category: string;
   tags: string[];
   thumbnail: string | null;
   views: number;

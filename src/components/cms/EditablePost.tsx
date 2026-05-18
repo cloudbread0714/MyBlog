@@ -9,8 +9,8 @@ import { pickLocalized } from "@/i18n/content";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionary";
 import { createClient } from "@/lib/supabase/client";
-import { POST_CATEGORIES } from "@/lib/post-categories";
-import type { Post, PostCategory } from "@/types/database";
+import { getCategoryLabel, type PostCategoryRow } from "@/lib/post-categories";
+import type { Post } from "@/types/database";
 
 const TiptapEditor = dynamic(
   () => import("@/components/editor/TiptapEditor").then((m) => m.TiptapEditor),
@@ -22,11 +22,13 @@ export function EditablePost({
   locale,
   isAdmin,
   labels,
+  categories,
 }: {
   post: Post;
   locale: Locale;
   isAdmin: boolean;
   labels: Dictionary["editor"] & Dictionary["posts"];
+  categories: PostCategoryRow[];
 }) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
@@ -34,7 +36,7 @@ export function EditablePost({
   const [titleEn, setTitleEn] = useState(post.title_en ?? "");
   const [content, setContent] = useState(post.content);
   const [contentEn, setContentEn] = useState(post.content_en ?? "");
-  const [category, setCategory] = useState<PostCategory>(post.category ?? "study");
+  const [category, setCategory] = useState(post.category ?? "study");
   const [tagsInput, setTagsInput] = useState(post.tags.join(", "));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -102,12 +104,12 @@ export function EditablePost({
           <label className="mb-1 block font-mono text-xs text-muted">{labels.category}</label>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value as PostCategory)}
+            onChange={(e) => setCategory(e.target.value)}
             className="w-full rounded-lg border border-border bg-card px-4 py-2 text-sm focus:border-accent focus:outline-none"
           >
-            {POST_CATEGORIES.map((key) => (
-              <option key={key} value={key}>
-                {labels.categories[key]}
+            {categories.map((cat) => (
+              <option key={cat.slug} value={cat.slug}>
+                {locale === "en" ? cat.label_en : cat.label_ko}
               </option>
             ))}
           </select>
@@ -157,7 +159,7 @@ export function EditablePost({
       )}
       <header className="mt-4 border-b border-border pb-8">
         <span className="rounded border border-accent/40 bg-accent-soft px-2 py-0.5 font-mono text-xs text-accent">
-          {labels.categories[category]}
+          {getCategoryLabel(categories, category, locale)}
         </span>
         <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{displayTitle}</h1>
       </header>

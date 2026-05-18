@@ -23,6 +23,7 @@ type EditablePageProps = {
   isAdmin: boolean;
   labels: { editSection: string; save: string; saving: string; cancel: string; korean: string; english: string; fallbackNote: string };
   className?: string;
+  editPlacement?: "block" | "floating";
 };
 
 export function EditablePage({
@@ -33,6 +34,7 @@ export function EditablePage({
   isAdmin,
   labels,
   className = "",
+  editPlacement = "block",
 }: EditablePageProps) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
@@ -109,7 +111,15 @@ export function EditablePage({
   return (
     <div className={`group relative ${className}`}>
       {isAdmin && (
-        <button type="button" onClick={() => setEditing(true)} className="mb-6 inline-flex items-center gap-1.5 rounded-md border border-dashed border-border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-muted transition-colors hover:border-accent hover:text-accent">
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          className={
+            editPlacement === "floating"
+              ? "absolute right-0 top-0 z-10 inline-flex items-center gap-1.5 rounded-md border border-dashed border-border bg-background/90 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-muted backdrop-blur-sm transition-colors hover:border-accent hover:text-accent"
+              : "mb-6 inline-flex items-center gap-1.5 rounded-md border border-dashed border-border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wide text-muted transition-colors hover:border-accent hover:text-accent"
+          }
+        >
           <Pencil className="h-3 w-3" />
           {labels.editSection}
         </button>

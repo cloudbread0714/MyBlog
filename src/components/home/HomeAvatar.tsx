@@ -12,10 +12,12 @@ export function HomeAvatar({
   avatarUrl,
   isAdmin,
   labels,
+  compact = false,
 }: {
   avatarUrl: string | null;
   isAdmin: boolean;
   labels: Dictionary["home"];
+  compact?: boolean;
 }) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -58,9 +60,19 @@ export function HomeAvatar({
   };
 
   return (
-    <div className="flex shrink-0 flex-col items-center gap-3 sm:items-start">
-      <div className="relative">
-        <div className="h-36 w-36 overflow-hidden rounded-2xl border-2 border-border bg-card shadow-md ring-1 ring-black/5 dark:ring-white/10 sm:h-44 sm:w-44">
+    <div
+      className={
+        compact
+          ? "mx-auto w-full max-w-[11rem] shrink-0 sm:mx-0"
+          : "flex shrink-0 flex-col items-center gap-3 sm:items-start"
+      }
+    >
+      <div className="relative mx-auto w-full sm:mx-0">
+        <div
+          className={`aspect-square w-full overflow-hidden rounded-2xl border-2 border-border bg-card shadow-md ring-1 ring-black/5 dark:ring-white/10 ${
+            compact ? "" : "max-h-44 max-w-[11rem]"
+          }`}
+        >
           {avatarUrl ? (
             <Image
               src={avatarUrl}
@@ -90,7 +102,7 @@ export function HomeAvatar({
         )}
       </div>
 
-      {isAdmin && (
+      {isAdmin && !compact && (
         <div className="flex flex-wrap justify-center gap-2 sm:justify-start">
           <button
             type="button"
@@ -125,7 +137,9 @@ export function HomeAvatar({
         }}
       />
 
-      {error && <p className="max-w-[11rem] text-center text-xs text-red-500">{error}</p>}
+      {error && !compact && (
+        <p className="max-w-[11rem] text-center text-xs text-red-500">{error}</p>
+      )}
     </div>
   );
 }

@@ -2,7 +2,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionary";
-import type { Post, PostCategory } from "@/types/database";
+import { getCategoryLabel, type PostCategoryRow } from "@/lib/post-categories";
+import type { Post } from "@/types/database";
 import { formatDate, readingTime } from "@/lib/utils";
 
 export function PostCard({
@@ -12,10 +13,9 @@ export function PostCard({
 }: {
   post: Post;
   locale: Locale;
-  labels: Dictionary["posts"];
+  labels: Dictionary["posts"] & { categories: PostCategoryRow[] };
 }) {
-  const category = (post.category ?? "study") as PostCategory;
-  const categoryLabel = labels.categories[category] ?? category;
+  const categoryLabel = getCategoryLabel(labels.categories, post.category ?? "study", locale);
 
   return (
     <article className="card group">

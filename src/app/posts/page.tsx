@@ -1,9 +1,11 @@
 import { EditablePage } from "@/components/cms/EditablePage";
+import { CategoryManager } from "@/components/posts/CategoryManager";
 import { PostsList } from "@/components/posts/PostsList";
 import { getIsAdmin } from "@/lib/auth";
 import { localizePost } from "@/i18n/content";
 import { getDictionary } from "@/i18n/dictionary";
 import { getLocale } from "@/i18n/locale";
+import { getPostCategories } from "@/lib/post-categories";
 import { PAGE_SLUGS } from "@/lib/page-defaults";
 import { getPageContentForEdit } from "@/lib/pages";
 import { createClient } from "@/lib/supabase/server";
@@ -17,7 +19,10 @@ export default async function PostsPage() {
   const t = getDictionary(locale);
   const supabase = await createClient();
   const isAdmin = await getIsAdmin();
-  const pageContent = await getPageContentForEdit(PAGE_SLUGS.posts);
+  const [pageContent, categories] = await Promise.all([
+    getPageContentForEdit(PAGE_SLUGS.posts),
+    getPostCategories(),
+  ]);
 
   const { data: posts } = await supabase
     .from("posts")
@@ -25,6 +30,7 @@ export default async function PostsPage() {
     .order("created_at", { ascending: false });
 
   const localized = (posts ?? []).map((p) => localizePost(p, locale));
+  const postLabels = { ...t.posts, categories };
 
   return (
     <>
@@ -37,7 +43,22 @@ export default async function PostsPage() {
         labels={t.editor}
         className="mb-8"
       />
-      <PostsList posts={localized} locale={locale} labels={t.posts} />
+      {isAdmin && (
+        <CategoryManager
+          categories={categories}
+          labels={{
+            title: t.posts.manageCategories,
+            hint: t.posts.manageCategoriesHint,
+            nameKo: t.posts.categoryNameKo,
+            nameEn: t.posts.categoryNameEn,
+            slug: t.posts.categorySlug,
+            add: t.posts.addCategory,
+            saving: t.editor.saving,
+            delete: t.posts.deleteCategory,
+          }}
+        />
+      )}
+      <PostsList posts={localized} locale={locale} labels={postLabels} />
     </>
   );
 }

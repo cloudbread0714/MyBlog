@@ -34,13 +34,13 @@
     "readMin": "min read",
     "views": "views",
     "editPost": "Edit post",
-    "categories": {
-      "study": "Study",
-      "devlog": "Dev log",
-      "project": "Project notes",
-      "troubleshooting": "Troubleshooting",
-      "etc": "Other"
-    }
+    "manageCategories": "Manage categories",
+    "manageCategoriesHint": "Add or remove categories used when writing posts.",
+    "categoryNameKo": "Name (Korean)",
+    "categoryNameEn": "Name (English)",
+    "categorySlug": "Slug (optional)",
+    "addCategory": "Add category",
+    "deleteCategory": "Delete"
   },
   "projects": {
     "label": "Work",

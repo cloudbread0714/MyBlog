@@ -1,14 +1,13 @@
-import Link from "next/link";
-import { EditablePage } from "@/components/cms/EditablePage";
-import { HomeAvatar } from "@/components/home/HomeAvatar";
-import { getAboutProfile } from "@/lib/about-profile";
+import { HomeHero } from "@/components/home/HomeHero";
 import { SectionHeader } from "@/components/layout/SectionHeader";
 import { PostCard } from "@/components/posts/PostCard";
 import { ProjectCard } from "@/components/projects/ProjectCard";
 import { getIsAdmin } from "@/lib/auth";
+import { getAboutProfile } from "@/lib/about-profile";
 import { localizePost, localizeProject } from "@/i18n/content";
 import { getDictionary } from "@/i18n/dictionary";
 import { getLocale } from "@/i18n/locale";
+import { getPostCategories } from "@/lib/post-categories";
 import { PAGE_SLUGS } from "@/lib/page-defaults";
 import { getPageContentForEdit } from "@/lib/pages";
 import { createClient } from "@/lib/supabase/server";
@@ -18,17 +17,14 @@ export default async function HomePage() {
   const t = getDictionary(locale);
   const supabase = await createClient();
   const isAdmin = await getIsAdmin();
-  const [pageContent, profile] = await Promise.all([
+  const [pageContent, profile, categories] = await Promise.all([
     getPageContentForEdit(PAGE_SLUGS.home),
     getAboutProfile(),
+    getPostCategories(),
   ]);
 
   const [{ data: posts }, { data: featuredProjects }, { data: education }] = await Promise.all([
-    supabase
-      .from("posts")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(4),
+    supabase.from("posts").select("*").order("created_at", { ascending: false }).limit(4),
     supabase
       .from("projects")
       .select("*")
@@ -61,35 +57,20 @@ export default async function HomePage() {
     period: t.projects.period,
   };
 
+  const postLabels = { ...t.posts, categories };
+
   return (
     <>
-      <section className="mb-20">
-        <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-start sm:gap-10">
-          <HomeAvatar
-            avatarUrl={profile.avatar_url}
-            isAdmin={isAdmin}
-            labels={t.home}
-          />
-          <div className="min-w-0 flex-1 text-center sm:text-left">
-            <EditablePage
-              slug={PAGE_SLUGS.home}
-              initialContentKo={pageContent.ko}
-              initialContentEn={pageContent.en}
-              locale={locale}
-              isAdmin={isAdmin}
-              labels={t.editor}
-            />
-            <div className="mt-10 flex flex-wrap justify-center gap-3 sm:justify-start">
-          <Link href="/projects" className="btn-primary">
-            {t.home.projectsBtn}
-          </Link>
-          <Link href="/about" className="btn-secondary">
-            {t.home.aboutBtn}
-          </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <HomeHero
+        slug={PAGE_SLUGS.home}
+        initialContentKo={pageContent.ko}
+        initialContentEn={pageContent.en}
+        locale={locale}
+        isAdmin={isAdmin}
+        avatarUrl={profile.avatar_url}
+        editorLabels={t.editor}
+        homeLabels={t.home}
+      />
 
       <section className="mb-20">
         <SectionHeader
@@ -101,17 +82,11 @@ export default async function HomePage() {
         <ul className="flex flex-col gap-3">
           {(posts ?? []).map((post) => (
             <li key={post.id}>
-              <PostCard
-                post={localizePost(post, locale)}
-                locale={locale}
-                labels={t.posts}
-              />
+              <PostCard post={localizePost(post, locale)} locale={locale} labels={postLabels} />
             </li>
           ))}
         </ul>
-        {!posts?.length && (
-          <p className="font-mono text-sm text-muted">{t.home.noPosts}</p>
-        )}
+        {!posts?.length && <p className="font-mono text-sm text-muted">{t.home.noPosts}</p>}
       </section>
 
       <section className="mb-20">
@@ -128,9 +103,7 @@ export default async function HomePage() {
             </li>
           ))}
         </ul>
-        {!projects?.length && (
-          <p className="font-mono text-sm text-muted">{t.home.noProjects}</p>
-        )}
+        {!projects?.length && <p className="font-mono text-sm text-muted">{t.home.noProjects}</p>}
       </section>
 
       {(education?.length ?? 0) > 0 && (

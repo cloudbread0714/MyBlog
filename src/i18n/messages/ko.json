@@ -34,13 +34,13 @@
     "readMin": "분 읽기",
     "views": "조회",
     "editPost": "글 수정",
-    "categories": {
-      "study": "스터디",
-      "devlog": "개발 일지",
-      "project": "프로젝트 회고",
-      "troubleshooting": "트러블슈팅",
-      "etc": "기타"
-    }
+    "manageCategories": "카테고리 관리",
+    "manageCategoriesHint": "글 작성 시 선택할 카테고리를 직접 추가·삭제할 수 있습니다.",
+    "categoryNameKo": "이름 (한국어)",
+    "categoryNameEn": "이름 (English)",
+    "categorySlug": "slug (영문, 비우면 자동)",
+    "addCategory": "카테고리 추가",
+    "deleteCategory": "삭제"
   },
   "projects": {
     "label": "Work",

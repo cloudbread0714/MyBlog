@@ -4,6 +4,7 @@ import { EditablePost } from "@/components/cms/EditablePost";
 import { getIsAdmin } from "@/lib/auth";
 import { getDictionary } from "@/i18n/dictionary";
 import { getLocale } from "@/i18n/locale";
+import { getPostCategories } from "@/lib/post-categories";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, readingTime } from "@/lib/utils";
 
@@ -25,6 +26,7 @@ export default async function PostDetailPage({ params }: Props) {
   const t = getDictionary(locale);
   const supabase = await createClient();
   const isAdmin = await getIsAdmin();
+  const categories = await getPostCategories();
 
   const { data: post } = await supabase.from("posts").select("*").eq("id", id).single();
 
@@ -71,6 +73,7 @@ export default async function PostDetailPage({ params }: Props) {
         locale={locale}
         isAdmin={isAdmin}
         labels={{ ...t.editor, ...t.posts }}
+        categories={categories}
       />
     </article>
   );

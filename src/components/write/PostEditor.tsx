@@ -4,9 +4,8 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
 import type { Dictionary } from "@/i18n/dictionary";
-import { DEFAULT_POST_CATEGORY, POST_CATEGORIES } from "@/lib/post-categories";
+import { getDefaultCategorySlug, type PostCategoryRow } from "@/lib/post-categories";
 import { createClient } from "@/lib/supabase/client";
-import type { PostCategory } from "@/types/database";
 
 const TiptapEditor = dynamic(
   () => import("@/components/editor/TiptapEditor").then((m) => m.TiptapEditor),
@@ -19,17 +18,24 @@ const TiptapEditor = dynamic(
 const DRAFT_KEY = "post-draft-v3";
 
 type PostEditorLabels = Dictionary["editor"] & {
-  categories: Dictionary["posts"]["categories"];
+  categoryLabel: string;
 };
 
-export function PostEditor({ labels }: { labels: PostEditorLabels }) {
+export function PostEditor({
+  labels,
+  categories,
+}: {
+  labels: PostEditorLabels;
+  categories: PostCategoryRow[];
+}) {
   const router = useRouter();
   const draftId = useId().replace(/:/g, "");
   const postId = `draft-${draftId}`;
 
   const [title, setTitle] = useState("");
   const [titleEn, setTitleEn] = useState("");
-  const [category, setCategory] = useState<PostCategory>(DEFAULT_POST_CATEGORY);
+  const defaultSlug = getDefaultCategorySlug(categories);
+  const [category, setCategory] = useState(defaultSlug);
   const [content, setContent] = useState("");
   const [contentEn, setContentEn] = useState("");
   const [tagsInput, setTagsInput] = useState("");
@@ -43,7 +49,7 @@ export function PostEditor({ labels }: { labels: PostEditorLabels }) {
         const draft = JSON.parse(saved) as Record<string, string>;
         setTitle(draft.title ?? "");
         setTitleEn(draft.titleEn ?? "");
-        setCategory((draft.category as PostCategory) ?? DEFAULT_POST_CATEGORY);
+        setCategory(draft.category ?? defaultSlug);
         setContent(draft.content ?? "");
         setContentEn(draft.contentEn ?? "");
         setTagsInput(draft.tagsInput ?? "");
@@ -123,15 +129,15 @@ export function PostEditor({ labels }: { labels: PostEditorLabels }) {
           <input value={titleEn} onChange={(e) => setTitleEn(e.target.value)} className={inputClass} />
         </div>
         <div>
-          <label className="mb-1.5 block font-mono text-sm text-muted">{labels.category}</label>
+          <label className="mb-1.5 block font-mono text-sm text-muted">{labels.categoryLabel}</label>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value as PostCategory)}
+            onChange={(e) => setCategory(e.target.value)}
             className={inputClass}
           >
-            {POST_CATEGORIES.map((key) => (
-              <option key={key} value={key}>
-                {labels.categories[key]}
+            {categories.map((cat) => (
+              <option key={cat.slug} value={cat.slug}>
+                {cat.label_ko}
               </option>
             ))}
           </select>
