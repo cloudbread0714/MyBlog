@@ -13,6 +13,12 @@ create table if not exists posts (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists page_contents (
+  slug text primary key,
+  content text not null default '',
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists projects (
   id uuid primary key default uuid_generate_v4(),
   name text not null,
@@ -43,7 +49,12 @@ create trigger projects_updated_at
   before update on projects
   for each row execute function update_updated_at();
 
+create trigger page_contents_updated_at
+  before update on page_contents
+  for each row execute function update_updated_at();
+
 alter table posts enable row level security;
+alter table page_contents enable row level security;
 alter table projects enable row level security;
 
 create policy "Public read posts" on posts for select using (true);
@@ -51,6 +62,9 @@ create policy "Auth write posts" on posts for all using (auth.role() = 'authenti
 
 create policy "Public read projects" on projects for select using (true);
 create policy "Auth write projects" on projects for all using (auth.role() = 'authenticated');
+
+create policy "Public read page_contents" on page_contents for select using (true);
+create policy "Auth write page_contents" on page_contents for all using (auth.role() = 'authenticated');
 
 insert into storage.buckets (id, name, public)
 values ('images', 'images', true)

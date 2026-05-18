@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ProseContent } from "@/components/content/ProseContent";
+import { EditablePost } from "@/components/cms/EditablePost";
+import { getIsAdmin } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, readingTime } from "@/lib/utils";
 
@@ -16,8 +17,10 @@ export async function generateMetadata({ params }: Props) {
 export default async function PostDetailPage({ params }: Props) {
   const { id } = await params;
   const supabase = await createClient();
-
-  const { data: post } = await supabase.from("posts").select("*").eq("id", id).single();
+  const [isAdmin, { data: post }] = await Promise.all([
+    getIsAdmin(),
+    supabase.from("posts").select("*").eq("id", id).single(),
+  ]);
 
   if (!post) notFound();
 
@@ -31,16 +34,14 @@ export default async function PostDetailPage({ params }: Props) {
       <Link href="/posts" className="text-sm text-accent hover:underline">
         ← 글 목록
       </Link>
-      <header className="mt-6 border-b border-border pb-8">
-        <time className="text-sm text-muted">{formatDate(post.created_at)}</time>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-          {post.title}
-        </h1>
-        <p className="mt-3 text-sm text-muted">
-          약 {readingTime(post.content)}분 읽기 · 조회 {post.views + 1}
-        </p>
+      <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted">
+        <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
+        <span>·</span>
+        <span>약 {readingTime(post.content)}분 읽기</span>
+        <span>·</span>
+        <span>조회 {post.views + 1}</span>
         {post.tags.length > 0 && (
-          <ul className="mt-4 flex flex-wrap gap-2">
+          <ul className="flex flex-wrap gap-2">
             {post.tags.map((tag: string) => (
               <li
                 key={tag}
@@ -51,10 +52,8 @@ export default async function PostDetailPage({ params }: Props) {
             ))}
           </ul>
         )}
-      </header>
-      <div className="mt-10">
-        <ProseContent html={post.content} />
       </div>
+      <EditablePost post={post} isAdmin={isAdmin} />
     </article>
   );
 }

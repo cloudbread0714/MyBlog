@@ -1,5 +1,9 @@
 import Link from "next/link";
+import { EditablePage } from "@/components/cms/EditablePage";
 import { ProjectCard } from "@/components/projects/ProjectCard";
+import { getIsAdmin } from "@/lib/auth";
+import { PAGE_SLUGS } from "@/lib/page-defaults";
+import { getPageContent } from "@/lib/pages";
 import { createClient } from "@/lib/supabase/server";
 
 export const metadata = {
@@ -8,23 +12,25 @@ export const metadata = {
 
 export default async function ProjectsPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const { data: projects } = await supabase
-    .from("projects")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const [isAdmin, headerContent, { data: projects }] = await Promise.all([
+    getIsAdmin(),
+    getPageContent(PAGE_SLUGS.projects),
+    supabase.from("projects").select("*").order("created_at", { ascending: false }),
+  ]);
 
   return (
     <>
-      <div className="mb-8 flex items-end justify-between">
-        <h1 className="text-3xl font-bold">프로젝트</h1>
-        {user && (
+      <div className="mb-8 flex items-end justify-between gap-4">
+        <EditablePage
+          slug={PAGE_SLUGS.projects}
+          initialContent={headerContent}
+          isAdmin={isAdmin}
+          className="flex-1"
+        />
+        {isAdmin && (
           <Link
             href="/projects/new"
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90"
+            className="shrink-0 rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white hover:opacity-90"
           >
             + 새 프로젝트
           </Link>

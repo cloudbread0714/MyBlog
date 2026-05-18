@@ -1,10 +1,16 @@
 import Link from "next/link";
+import { EditablePage } from "@/components/cms/EditablePage";
 import { PostCard } from "@/components/posts/PostCard";
 import { ProjectCard } from "@/components/projects/ProjectCard";
+import { getIsAdmin } from "@/lib/auth";
+import { PAGE_SLUGS } from "@/lib/page-defaults";
+import { getPageContent } from "@/lib/pages";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function HomePage() {
   const supabase = await createClient();
+  const isAdmin = await getIsAdmin();
+  const homeContent = await getPageContent(PAGE_SLUGS.home);
 
   const [{ data: posts }, { data: projects }] = await Promise.all([
     supabase
@@ -34,16 +40,11 @@ export default async function HomePage() {
   return (
     <>
       <section className="mb-16">
-        <p className="text-sm font-medium text-accent">Developer Portfolio</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight sm:text-5xl">
-          안녕하세요,
-          <br />
-          개발자 Yujin입니다.
-        </h1>
-        <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted">
-          프로젝트 경험, 문제 해결 과정, 학습 기록을 정리하는 공간입니다. 취업
-          포트폴리오이자 개발 아카이브입니다.
-        </p>
+        <EditablePage
+          slug={PAGE_SLUGS.home}
+          initialContent={homeContent}
+          isAdmin={isAdmin}
+        />
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href="/projects"
@@ -100,4 +101,3 @@ export default async function HomePage() {
     </>
   );
 }
-

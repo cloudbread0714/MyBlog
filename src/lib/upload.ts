@@ -2,7 +2,8 @@ import { createClient } from "@/lib/supabase/client";
 
 export type UploadContext =
   | { type: "post"; id: string }
-  | { type: "project"; id: string };
+  | { type: "project"; id: string }
+  | { type: "page"; slug: string };
 
 function buildPath(ctx: UploadContext, file: File): string {
   const ext = file.name.split(".").pop() || "png";
@@ -11,7 +12,10 @@ function buildPath(ctx: UploadContext, file: File): string {
   if (ctx.type === "post") {
     return `posts/${ctx.id}/clipboard-${ts}.${ext}`;
   }
-  return `projects/${ctx.id}/image-${ts}.${ext}`;
+  if (ctx.type === "project") {
+    return `projects/${ctx.id}/image-${ts}.${ext}`;
+  }
+  return `pages/${ctx.slug}/image-${ts}.${ext}`;
 }
 
 export async function uploadImage(

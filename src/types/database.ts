@@ -23,6 +23,12 @@ export type Project = {
   updated_at: string;
 };
 
+export type PageContent = {
+  slug: string;
+  content: string;
+  updated_at: string;
+};
+
 export type PostInsert = Pick<Post, "title" | "content" | "tags" | "thumbnail">;
 export type ProjectInsert = Pick<
   Project,
