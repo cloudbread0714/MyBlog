@@ -42,7 +42,14 @@ body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 1.0625rem;
   line-height: 1.75;
+}
+
+@media (min-width: 640px) {
+  body {
+    font-size: 1.125rem;
+  }
 }
 
 ::selection {
@@ -68,7 +75,7 @@ body {
 /* Section label */
 .section-label {
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -126,18 +133,19 @@ body {
 
 /* TipTap editor */
 .prose-editor h1 {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 1rem 0 0.5rem;
 }
 .prose-editor h2 {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
   margin: 0.875rem 0 0.5rem;
 }
 .prose-editor p {
   margin: 0.5rem 0;
+  font-size: 1.0625rem;
 }
 .prose-editor ul,
 .prose-editor ol {
@@ -197,6 +205,32 @@ body {
   height: 0;
   pointer-events: none;
 }
+.prose-editor table,
+.prose-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+.prose-editor th,
+.prose-editor td,
+.prose-content th,
+.prose-content td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+.prose-editor th,
+.prose-content th {
+  background: var(--code-bg);
+  font-weight: 600;
+}
+.prose-editor .tableWrapper,
+.prose-content .tableWrapper {
+  overflow-x: auto;
+  margin: 1rem 0;
+}
 
 /* Rendered content */
 .prose-content {
@@ -213,14 +247,14 @@ body {
   margin-bottom: 0.75rem;
 }
 .prose-content h1 {
-  font-size: clamp(1.875rem, 4vw, 2.5rem);
+  font-size: clamp(2.125rem, 5vw, 3rem);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.2;
   margin: 0 0 1rem;
 }
 .prose-content h2 {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.02em;
   margin: 2rem 0 0.75rem;
@@ -229,8 +263,15 @@ body {
 }
 .prose-content p {
   margin: 0.75rem 0;
+  font-size: 1.0625rem;
   line-height: 1.85;
   color: var(--foreground);
+}
+
+@media (min-width: 640px) {
+  .prose-content p {
+    font-size: 1.125rem;
+  }
 }
 .prose-content ul,
 .prose-content ol {

@@ -9,7 +9,8 @@ import { pickLocalized } from "@/i18n/content";
 import type { Locale } from "@/i18n/config";
 import type { Dictionary } from "@/i18n/dictionary";
 import { createClient } from "@/lib/supabase/client";
-import type { Post } from "@/types/database";
+import { POST_CATEGORIES } from "@/lib/post-categories";
+import type { Post, PostCategory } from "@/types/database";
 
 const TiptapEditor = dynamic(
   () => import("@/components/editor/TiptapEditor").then((m) => m.TiptapEditor),
@@ -33,6 +34,7 @@ export function EditablePost({
   const [titleEn, setTitleEn] = useState(post.title_en ?? "");
   const [content, setContent] = useState(post.content);
   const [contentEn, setContentEn] = useState(post.content_en ?? "");
+  const [category, setCategory] = useState<PostCategory>(post.category ?? "study");
   const [tagsInput, setTagsInput] = useState(post.tags.join(", "));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -52,6 +54,7 @@ export function EditablePost({
         title_en: titleEn.trim() || null,
         content,
         content_en: contentEn.trim() || null,
+        category,
         tags,
       })
       .eq("id", post.id);
@@ -69,6 +72,7 @@ export function EditablePost({
     setTitleEn(post.title_en ?? "");
     setContent(post.content);
     setContentEn(post.content_en ?? "");
+    setCategory(post.category ?? "study");
     setTagsInput(post.tags.join(", "));
     setEditing(false);
     setError("");
@@ -93,6 +97,20 @@ export function EditablePost({
             onChange={(e) => setTitleEn(e.target.value)}
             className="w-full rounded-lg border border-border bg-card px-4 py-2 text-sm focus:border-accent focus:outline-none"
           />
+        </div>
+        <div>
+          <label className="mb-1 block font-mono text-xs text-muted">{labels.category}</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as PostCategory)}
+            className="w-full rounded-lg border border-border bg-card px-4 py-2 text-sm focus:border-accent focus:outline-none"
+          >
+            {POST_CATEGORIES.map((key) => (
+              <option key={key} value={key}>
+                {labels.categories[key]}
+              </option>
+            ))}
+          </select>
         </div>
         <input
           value={tagsInput}
@@ -138,7 +156,10 @@ export function EditablePost({
         </button>
       )}
       <header className="mt-4 border-b border-border pb-8">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{displayTitle}</h1>
+        <span className="rounded border border-accent/40 bg-accent-soft px-2 py-0.5 font-mono text-xs text-accent">
+          {labels.categories[category]}
+        </span>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{displayTitle}</h1>
       </header>
       <div className="mt-10">
         <ProseContent html={displayContent} />

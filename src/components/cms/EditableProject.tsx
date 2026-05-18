@@ -37,6 +37,7 @@ export function EditableProject({
   const [roleEn, setRoleEn] = useState(project.role_en ?? "");
   const [stackInput, setStackInput] = useState(project.stack.join(", "));
   const [githubUrl, setGithubUrl] = useState(project.github_url ?? "");
+  const [period, setPeriod] = useState(project.period ?? "");
   const [content, setContent] = useState(project.content);
   const [contentEn, setContentEn] = useState(project.content_en ?? "");
   const [saving, setSaving] = useState(false);
@@ -58,6 +59,7 @@ export function EditableProject({
       content,
       content_en: contentEn.trim() || null,
       github_url: githubUrl.trim() || null,
+      period: period.trim() || null,
     }).eq("id", project.id);
     setSaving(false);
     if (saveError) { setError(saveError.message); return; }
@@ -74,6 +76,7 @@ export function EditableProject({
     setRoleEn(project.role_en ?? "");
     setStackInput(project.stack.join(", "));
     setGithubUrl(project.github_url ?? "");
+    setPeriod(project.period ?? "");
     setContent(project.content);
     setContentEn(project.content_en ?? "");
     setEditing(false);
@@ -84,6 +87,7 @@ export function EditableProject({
   const displayDescription = pickLocalized(description, descriptionEn, locale);
   const displayRole = pickLocalized(role, roleEn, locale);
   const displayContent = pickLocalized(content, contentEn, locale);
+  const isEducation = (project.kind ?? "project") === "education";
 
   if (editing) {
     return (
@@ -103,6 +107,14 @@ export function EditableProject({
         <input value={roleEn} onChange={(e) => setRoleEn(e.target.value)} className="w-full rounded-lg border border-border bg-card px-4 py-2 text-sm focus:border-accent focus:outline-none" />
         <input value={stackInput} onChange={(e) => setStackInput(e.target.value)} className="w-full rounded-lg border border-border bg-card px-4 py-2 text-sm focus:border-accent focus:outline-none" />
         <input value={githubUrl} onChange={(e) => setGithubUrl(e.target.value)} placeholder="GitHub URL" className="w-full rounded-lg border border-border bg-card px-4 py-2 text-sm focus:border-accent focus:outline-none" />
+        {isEducation && (
+          <input
+            value={period}
+            onChange={(e) => setPeriod(e.target.value)}
+            placeholder={labels.period}
+            className="w-full rounded-lg border border-border bg-card px-4 py-2 text-sm focus:border-accent focus:outline-none"
+          />
+        )}
         <div>
           <label className="mb-1 block font-mono text-xs text-muted">{labels.body}</label>
           <TiptapEditor content={content} onChange={setContent} uploadContext={{ type: "project", id: project.id }} />
@@ -128,11 +140,19 @@ export function EditableProject({
         </button>
       )}
       <header className="mt-4 border-b border-border pb-8">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{displayName}</h1>
+        {isEducation && (
+          <span className="rounded border border-accent/40 bg-accent-soft px-2 py-0.5 font-mono text-xs text-accent">
+            {labels.badgeEducation}
+          </span>
+        )}
+        <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{displayName}</h1>
+        {project.period && (
+          <p className="mt-2 font-mono text-sm text-muted">{project.period}</p>
+        )}
         <p className="mt-4 text-lg text-foreground/85">{displayDescription}</p>
         {displayRole && (
-          <p className="mt-3 text-sm">
-            <span className="font-medium">{labels.role}</span> · {displayRole}
+          <p className="mt-3 text-base">
+            <span className="font-medium">{isEducation ? labels.institution : labels.role}</span> · {displayRole}
           </p>
         )}
         {project.stack.length > 0 && (

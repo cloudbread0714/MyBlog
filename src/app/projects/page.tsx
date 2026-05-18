@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { EditablePage } from "@/components/cms/EditablePage";
-import { ProjectCard } from "@/components/projects/ProjectCard";
+import { ProjectsView } from "@/components/projects/ProjectsView";
 import { getIsAdmin } from "@/lib/auth";
 import { localizeProject } from "@/i18n/content";
 import { getDictionary } from "@/i18n/dictionary";
@@ -13,7 +12,11 @@ export const metadata = {
   title: "프로젝트 | Dev Blog",
 };
 
-export default async function ProjectsPage() {
+type Props = { searchParams: Promise<{ tab?: string }> };
+
+export default async function ProjectsPage({ searchParams }: Props) {
+  const { tab } = await searchParams;
+  const initialTab = tab === "education" ? "education" : "project";
   const locale = await getLocale();
   const t = getDictionary(locale);
   const supabase = await createClient();
@@ -25,9 +28,11 @@ export default async function ProjectsPage() {
     .select("*")
     .order("created_at", { ascending: false });
 
+  const localized = (projects ?? []).map((p) => localizeProject(p, locale));
+
   return (
     <>
-      <div className="mb-8 flex items-end justify-between gap-4">
+      <div className="mb-8">
         <EditablePage
           slug={PAGE_SLUGS.projects}
           initialContentKo={pageContent.ko}
@@ -35,29 +40,14 @@ export default async function ProjectsPage() {
           locale={locale}
           isAdmin={isAdmin}
           labels={t.editor}
-          className="flex-1"
         />
-        {isAdmin && (
-          <Link
-            href="/projects/new"
-            className="btn-primary shrink-0 !text-xs"
-          >
-            {t.projects.new}
-          </Link>
-        )}
       </div>
-      <ul className="flex flex-col gap-3">
-        {(projects ?? []).map((project) => (
-          <li key={project.id}>
-            <ProjectCard project={localizeProject(project, locale)} />
-          </li>
-        ))}
-      </ul>
-      {!projects?.length && (
-        <p className="py-12 text-center font-mono text-sm text-muted">
-          {t.projects.noProjects}
-        </p>
-      )}
+      <ProjectsView
+        projects={localized}
+        labels={t.projects}
+        isAdmin={isAdmin}
+        initialTab={initialTab}
+      />
     </>
   );
 }

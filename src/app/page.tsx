@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { EditablePage } from "@/components/cms/EditablePage";
+import { HomeAvatar } from "@/components/home/HomeAvatar";
+import { getAboutProfile } from "@/lib/about-profile";
 import { SectionHeader } from "@/components/layout/SectionHeader";
 import { PostCard } from "@/components/posts/PostCard";
 import { ProjectCard } from "@/components/projects/ProjectCard";
@@ -16,9 +18,12 @@ export default async function HomePage() {
   const t = getDictionary(locale);
   const supabase = await createClient();
   const isAdmin = await getIsAdmin();
-  const pageContent = await getPageContentForEdit(PAGE_SLUGS.home);
+  const [pageContent, profile] = await Promise.all([
+    getPageContentForEdit(PAGE_SLUGS.home),
+    getAboutProfile(),
+  ]);
 
-  const [{ data: posts }, { data: projects }] = await Promise.all([
+  const [{ data: posts }, { data: featuredProjects }, { data: education }] = await Promise.all([
     supabase
       .from("posts")
       .select("*")
@@ -28,39 +33,61 @@ export default async function HomePage() {
       .from("projects")
       .select("*")
       .eq("featured", true)
+      .eq("kind", "project")
+      .order("created_at", { ascending: false })
+      .limit(2),
+    supabase
+      .from("projects")
+      .select("*")
+      .eq("kind", "education")
       .order("created_at", { ascending: false })
       .limit(2),
   ]);
 
-  const featuredProjects =
-    projects && projects.length > 0
-      ? projects
+  const projects =
+    featuredProjects && featuredProjects.length > 0
+      ? featuredProjects
       : (
           await supabase
             .from("projects")
             .select("*")
+            .eq("kind", "project")
             .order("created_at", { ascending: false })
             .limit(2)
         ).data;
 
+  const projectLabels = {
+    badgeEducation: t.projects.badgeEducation,
+    period: t.projects.period,
+  };
+
   return (
     <>
       <section className="mb-20">
-        <EditablePage
-          slug={PAGE_SLUGS.home}
-          initialContentKo={pageContent.ko}
-          initialContentEn={pageContent.en}
-          locale={locale}
-          isAdmin={isAdmin}
-          labels={t.editor}
-        />
-        <div className="mt-10 flex flex-wrap gap-3">
+        <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-start sm:gap-10">
+          <HomeAvatar
+            avatarUrl={profile.avatar_url}
+            isAdmin={isAdmin}
+            labels={t.home}
+          />
+          <div className="min-w-0 flex-1 text-center sm:text-left">
+            <EditablePage
+              slug={PAGE_SLUGS.home}
+              initialContentKo={pageContent.ko}
+              initialContentEn={pageContent.en}
+              locale={locale}
+              isAdmin={isAdmin}
+              labels={t.editor}
+            />
+            <div className="mt-10 flex flex-wrap justify-center gap-3 sm:justify-start">
           <Link href="/projects" className="btn-primary">
             {t.home.projectsBtn}
           </Link>
           <Link href="/about" className="btn-secondary">
             {t.home.aboutBtn}
           </Link>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -77,7 +104,7 @@ export default async function HomePage() {
               <PostCard
                 post={localizePost(post, locale)}
                 locale={locale}
-                labels={{ readMin: t.posts.readMin }}
+                labels={t.posts}
               />
             </li>
           ))}
@@ -87,7 +114,7 @@ export default async function HomePage() {
         )}
       </section>
 
-      <section>
+      <section className="mb-20">
         <SectionHeader
           label={t.projects.label}
           title={t.home.featuredProjects}
@@ -95,16 +122,34 @@ export default async function HomePage() {
           linkText={t.home.viewAll}
         />
         <ul className="flex flex-col gap-3">
-          {(featuredProjects ?? []).map((project) => (
+          {(projects ?? []).map((project) => (
             <li key={project.id}>
-              <ProjectCard project={localizeProject(project, locale)} />
+              <ProjectCard project={localizeProject(project, locale)} labels={projectLabels} />
             </li>
           ))}
         </ul>
-        {!featuredProjects?.length && (
+        {!projects?.length && (
           <p className="font-mono text-sm text-muted">{t.home.noProjects}</p>
         )}
       </section>
+
+      {(education?.length ?? 0) > 0 && (
+        <section>
+          <SectionHeader
+            label={t.projects.label}
+            title={t.home.featuredEducation}
+            href="/projects?tab=education"
+            linkText={t.home.viewAll}
+          />
+          <ul className="flex flex-col gap-3">
+            {education!.map((item) => (
+              <li key={item.id}>
+                <ProjectCard project={localizeProject(item, locale)} labels={projectLabels} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </>
   );
 }

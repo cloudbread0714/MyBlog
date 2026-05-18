@@ -1,5 +1,7 @@
+import { AboutSkills } from "@/components/about/AboutSkills";
 import { EditablePage } from "@/components/cms/EditablePage";
 import { getIsAdmin } from "@/lib/auth";
+import { getAboutProfile } from "@/lib/about-profile";
 import { getDictionary } from "@/i18n/dictionary";
 import { getLocale } from "@/i18n/locale";
 import { PAGE_SLUGS } from "@/lib/page-defaults";
@@ -13,7 +15,10 @@ export default async function AboutPage() {
   const locale = await getLocale();
   const t = getDictionary(locale);
   const isAdmin = await getIsAdmin();
-  const pageContent = await getPageContentForEdit(PAGE_SLUGS.about);
+  const [pageContent, profile] = await Promise.all([
+    getPageContentForEdit(PAGE_SLUGS.about),
+    getAboutProfile(),
+  ]);
 
   return (
     <article className="max-w-2xl">
@@ -25,6 +30,7 @@ export default async function AboutPage() {
         isAdmin={isAdmin}
         labels={t.editor}
       />
+      <AboutSkills profile={profile} isAdmin={isAdmin} labels={t.about} />
     </article>
   );
 }

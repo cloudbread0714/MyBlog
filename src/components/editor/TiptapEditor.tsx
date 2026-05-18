@@ -4,12 +4,20 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
+import Table from "@tiptap/extension-table";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
+import TableRow from "@tiptap/extension-table-row";
+import TextStyle from "@tiptap/extension-text-style";
 import type { Editor } from "@tiptap/react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { common, createLowlight } from "lowlight";
 import { useCallback, useEffect, useRef } from "react";
+import { EditorBubbleMenu } from "@/components/editor/EditorBubbleMenu";
 import { EditorToolbar } from "@/components/editor/EditorToolbar";
+import { FontSizeExtension } from "@/components/editor/extensions/font-size";
+import { IndentExtension } from "@/components/editor/extensions/indent";
 import { extractImageFiles, uploadImage, type UploadContext } from "@/lib/upload";
 
 const lowlight = createLowlight(common);
@@ -49,8 +57,15 @@ export function TiptapEditor({
     extensions: [
       StarterKit.configure({ codeBlock: false }),
       CodeBlockLowlight.configure({ lowlight }),
+      TextStyle,
+      FontSizeExtension,
+      IndentExtension,
       Link.configure({ openOnClick: false }),
       Image.configure({ HTMLAttributes: { class: "editor-image" } }),
+      Table.configure({ resizable: true }),
+      TableRow,
+      TableHeader,
+      TableCell,
       Placeholder.configure({ placeholder }),
     ],
     content,
@@ -108,6 +123,7 @@ export function TiptapEditor({
   return (
     <div className="overflow-hidden rounded-xl border border-border bg-card shadow-sm ring-1 ring-black/[0.03] dark:ring-white/[0.05]">
       <EditorToolbar editor={editor} onImageUpload={handleImageUpload} />
+      <EditorBubbleMenu editor={editor} />
       <EditorContent editor={editor} />
     </div>
   );

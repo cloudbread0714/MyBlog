@@ -3,7 +3,8 @@ import { createClient } from "@/lib/supabase/client";
 export type UploadContext =
   | { type: "post"; id: string }
   | { type: "project"; id: string }
-  | { type: "page"; slug: string };
+  | { type: "page"; slug: string }
+  | { type: "profile" };
 
 function buildPath(ctx: UploadContext, file: File): string {
   const ext = file.name.split(".").pop() || "png";
@@ -15,7 +16,14 @@ function buildPath(ctx: UploadContext, file: File): string {
   if (ctx.type === "project") {
     return `projects/${ctx.id}/image-${ts}.${ext}`;
   }
+  if (ctx.type === "profile") {
+    return `profile/avatar.${ext}`;
+  }
   return `pages/${ctx.slug}/image-${ts}.${ext}`;
+}
+
+function shouldUpsert(ctx: UploadContext) {
+  return ctx.type === "profile";
 }
 
 export async function uploadImage(
@@ -27,7 +35,7 @@ export async function uploadImage(
 
   const { error } = await supabase.storage.from("images").upload(path, file, {
     cacheControl: "3600",
-    upsert: false,
+    upsert: shouldUpsert(ctx),
   });
 
   if (error) throw error;

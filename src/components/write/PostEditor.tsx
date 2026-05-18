@@ -4,7 +4,9 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useId, useState } from "react";
 import type { Dictionary } from "@/i18n/dictionary";
+import { DEFAULT_POST_CATEGORY, POST_CATEGORIES } from "@/lib/post-categories";
 import { createClient } from "@/lib/supabase/client";
+import type { PostCategory } from "@/types/database";
 
 const TiptapEditor = dynamic(
   () => import("@/components/editor/TiptapEditor").then((m) => m.TiptapEditor),
@@ -14,15 +16,20 @@ const TiptapEditor = dynamic(
   },
 );
 
-const DRAFT_KEY = "post-draft-v2";
+const DRAFT_KEY = "post-draft-v3";
 
-export function PostEditor({ labels }: { labels: Dictionary["editor"] }) {
+type PostEditorLabels = Dictionary["editor"] & {
+  categories: Dictionary["posts"]["categories"];
+};
+
+export function PostEditor({ labels }: { labels: PostEditorLabels }) {
   const router = useRouter();
   const draftId = useId().replace(/:/g, "");
   const postId = `draft-${draftId}`;
 
   const [title, setTitle] = useState("");
   const [titleEn, setTitleEn] = useState("");
+  const [category, setCategory] = useState<PostCategory>(DEFAULT_POST_CATEGORY);
   const [content, setContent] = useState("");
   const [contentEn, setContentEn] = useState("");
   const [tagsInput, setTagsInput] = useState("");
@@ -36,6 +43,7 @@ export function PostEditor({ labels }: { labels: Dictionary["editor"] }) {
         const draft = JSON.parse(saved) as Record<string, string>;
         setTitle(draft.title ?? "");
         setTitleEn(draft.titleEn ?? "");
+        setCategory((draft.category as PostCategory) ?? DEFAULT_POST_CATEGORY);
         setContent(draft.content ?? "");
         setContentEn(draft.contentEn ?? "");
         setTagsInput(draft.tagsInput ?? "");
@@ -49,11 +57,11 @@ export function PostEditor({ labels }: { labels: Dictionary["editor"] }) {
     const timer = setTimeout(() => {
       localStorage.setItem(
         DRAFT_KEY,
-        JSON.stringify({ title, titleEn, content, contentEn, tagsInput }),
+        JSON.stringify({ title, titleEn, category, content, contentEn, tagsInput }),
       );
     }, 1500);
     return () => clearTimeout(timer);
-  }, [title, titleEn, content, contentEn, tagsInput]);
+  }, [title, titleEn, category, content, contentEn, tagsInput]);
 
   const handleSave = useCallback(async () => {
     if (!title.trim()) {
@@ -75,6 +83,7 @@ export function PostEditor({ labels }: { labels: Dictionary["editor"] }) {
       .insert({
         title: title.trim(),
         title_en: titleEn.trim() || null,
+        category,
         content,
         content_en: contentEn.trim() || null,
         tags,
@@ -93,36 +102,50 @@ export function PostEditor({ labels }: { labels: Dictionary["editor"] }) {
     localStorage.removeItem(DRAFT_KEY);
     router.push(`/posts/${data.id}`);
     router.refresh();
-  }, [title, titleEn, content, contentEn, tagsInput, router, labels.title]);
+  }, [title, titleEn, category, content, contentEn, tagsInput, router, labels.title]);
 
   const inputClass =
-    "w-full rounded-lg border border-border bg-card px-4 py-2.5 focus:border-accent focus:outline-none";
+    "w-full rounded-lg border border-border bg-card px-4 py-2.5 text-base focus:border-accent focus:outline-none";
 
   return (
     <div className="max-w-3xl">
       <h1 className="text-3xl font-bold">{labels.writeTitle}</h1>
-      <p className="mt-2 text-sm text-muted">{labels.writeHint}</p>
-      <p className="mt-1 font-mono text-xs text-muted">{labels.fallbackNote}</p>
+      <p className="mt-2 text-base text-muted">{labels.writeHint}</p>
+      <p className="mt-1 font-mono text-sm text-muted">{labels.fallbackNote}</p>
 
       <div className="mt-8 space-y-5">
         <div>
-          <label className="mb-1.5 block font-mono text-xs text-muted">{labels.title}</label>
+          <label className="mb-1.5 block font-mono text-sm text-muted">{labels.title}</label>
           <input value={title} onChange={(e) => setTitle(e.target.value)} className={inputClass} />
         </div>
         <div>
-          <label className="mb-1.5 block font-mono text-xs text-muted">{labels.englishTitle}</label>
+          <label className="mb-1.5 block font-mono text-sm text-muted">{labels.englishTitle}</label>
           <input value={titleEn} onChange={(e) => setTitleEn(e.target.value)} className={inputClass} />
         </div>
         <div>
-          <label className="mb-1.5 block font-mono text-xs text-muted">{labels.tags}</label>
+          <label className="mb-1.5 block font-mono text-sm text-muted">{labels.category}</label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value as PostCategory)}
+            className={inputClass}
+          >
+            {POST_CATEGORIES.map((key) => (
+              <option key={key} value={key}>
+                {labels.categories[key]}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="mb-1.5 block font-mono text-sm text-muted">{labels.tags}</label>
           <input value={tagsInput} onChange={(e) => setTagsInput(e.target.value)} className={inputClass} />
         </div>
         <div>
-          <label className="mb-1.5 block font-mono text-xs text-muted">{labels.body}</label>
+          <label className="mb-1.5 block font-mono text-sm text-muted">{labels.body}</label>
           <TiptapEditor content={content} onChange={setContent} uploadContext={{ type: "post", id: postId }} />
         </div>
         <div>
-          <label className="mb-1.5 block font-mono text-xs text-muted">{labels.englishBody}</label>
+          <label className="mb-1.5 block font-mono text-sm text-muted">{labels.englishBody}</label>
           <TiptapEditor
             content={contentEn}
             onChange={setContentEn}

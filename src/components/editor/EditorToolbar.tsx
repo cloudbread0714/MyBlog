@@ -7,11 +7,14 @@ import {
   Heading1,
   Heading2,
   ImagePlus,
+  IndentDecrease,
+  IndentIncrease,
   Italic,
   Link as LinkIcon,
   List,
   ListOrdered,
   Quote,
+  Table,
 } from "lucide-react";
 import { useRef } from "react";
 
@@ -91,6 +94,22 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
       </button>
       <button
         type="button"
+        onClick={() => editor.chain().focus().indent().run()}
+        className={btn(false)}
+        title="들여쓰기 (Tab)"
+      >
+        <IndentIncrease className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        onClick={() => editor.chain().focus().outdent().run()}
+        className={btn(false)}
+        title="내어쓰기 (Shift+Tab)"
+      >
+        <IndentDecrease className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         className={btn(editor.isActive("blockquote"))}
         title="인용"
@@ -112,6 +131,17 @@ export function EditorToolbar({ editor, onImageUpload }: EditorToolbarProps) {
         title="링크"
       >
         <LinkIcon className="h-4 w-4" />
+      </button>
+
+      <button
+        type="button"
+        onClick={() =>
+          editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+        }
+        className={btn(editor.isActive("table"))}
+        title="표 삽입 (3×3)"
+      >
+        <Table className="h-4 w-4" />
       </button>
 
       <span className="mx-1 h-5 w-px bg-border" />

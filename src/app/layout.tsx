@@ -34,7 +34,7 @@ export default async function RootLayout({
         <ThemeProvider>
           <div className="bg-grid min-h-screen">
             <Header />
-            <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-3xl px-5 py-12 sm:px-8">
+            <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-3xl px-5 py-12 text-[1.0625rem] leading-relaxed sm:px-8 sm:text-[1.125rem]">
               {children}
             </main>
             <Footer />

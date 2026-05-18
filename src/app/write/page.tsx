@@ -9,5 +9,5 @@ export const metadata = {
 export default async function WritePage() {
   const locale = await getLocale();
   const t = getDictionary(locale);
-  return <PostEditor labels={t.editor} />;
+  return <PostEditor labels={{ ...t.editor, categories: t.posts.categories }} />;
 }

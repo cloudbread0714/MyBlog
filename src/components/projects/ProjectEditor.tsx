@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useId, useState } from "react";
 import type { Dictionary } from "@/i18n/dictionary";
 import { createClient } from "@/lib/supabase/client";
-import type { Project } from "@/types/database";
+import type { Project, ProjectKind } from "@/types/database";
 
 const TiptapEditor = dynamic(
   () => import("@/components/editor/TiptapEditor").then((m) => m.TiptapEditor),
@@ -14,10 +14,11 @@ const TiptapEditor = dynamic(
 
 type ProjectEditorProps = {
   project?: Project;
+  initialKind?: ProjectKind;
   labels: Dictionary["editor"] & Dictionary["projects"];
 };
 
-export function ProjectEditor({ project, labels }: ProjectEditorProps) {
+export function ProjectEditor({ project, initialKind = "project", labels }: ProjectEditorProps) {
   const router = useRouter();
   const draftId = useId().replace(/:/g, "");
   const projectId = project?.id ?? `draft-${draftId}`;
@@ -32,9 +33,13 @@ export function ProjectEditor({ project, labels }: ProjectEditorProps) {
   const [githubUrl, setGithubUrl] = useState(project?.github_url ?? "");
   const [content, setContent] = useState(project?.content ?? "");
   const [contentEn, setContentEn] = useState(project?.content_en ?? "");
+  const [kind, setKind] = useState<ProjectKind>(project?.kind ?? initialKind);
+  const [period, setPeriod] = useState(project?.period ?? "");
   const [featured, setFeatured] = useState(project?.featured ?? false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+
+  const isEducation = kind === "education";
 
   const handleSave = useCallback(async () => {
     if (!name.trim()) {
@@ -63,6 +68,8 @@ export function ProjectEditor({ project, labels }: ProjectEditorProps) {
       content_en: contentEn.trim() || null,
       github_url: githubUrl.trim() || null,
       featured,
+      kind,
+      period: period.trim() || null,
       images: project?.images ?? [],
     };
 
@@ -96,17 +103,45 @@ export function ProjectEditor({ project, labels }: ProjectEditorProps) {
     content,
     contentEn,
     featured,
+    kind,
+    period,
     project,
     router,
     labels.title,
   ]);
 
+  const pageTitle = project
+    ? isEducation
+      ? labels.editEducation
+      : labels.editProject
+    : isEducation
+      ? labels.newEducation
+      : labels.new;
+
   return (
     <div className="max-w-3xl">
-      <h1 className="text-3xl font-bold">{project ? labels.editProject : labels.new}</h1>
+      <h1 className="text-3xl font-bold">{pageTitle}</h1>
       <p className="mt-2 text-sm text-muted">{labels.fallbackNote}</p>
 
       <div className="mt-8 space-y-5">
+        {!project && (
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setKind("project")}
+              className={`rounded-lg border px-3 py-1.5 text-sm ${kind === "project" ? "border-foreground bg-foreground text-background" : "border-border"}`}
+            >
+              {labels.kindProject}
+            </button>
+            <button
+              type="button"
+              onClick={() => setKind("education")}
+              className={`rounded-lg border px-3 py-1.5 text-sm ${kind === "education" ? "border-foreground bg-foreground text-background" : "border-border"}`}
+            >
+              {labels.kindEducation}
+            </button>
+          </div>
+        )}
         <div>
           <label className="mb-1.5 block text-sm font-medium">{labels.title}</label>
           <input
@@ -140,13 +175,27 @@ export function ProjectEditor({ project, labels }: ProjectEditorProps) {
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-sm font-medium">{labels.role}</label>
+          <label className="mb-1.5 block text-sm font-medium">
+            {isEducation ? labels.institution : labels.role}
+          </label>
           <input
             value={role}
             onChange={(e) => setRole(e.target.value)}
             className="w-full rounded-lg border border-border bg-card px-4 py-2.5 focus:border-accent focus:outline-none"
+            placeholder={isEducation ? "예: OO 부트캠프" : "예: 프론트엔드 개발"}
           />
         </div>
+        {isEducation && (
+          <div>
+            <label className="mb-1.5 block text-sm font-medium">{labels.period}</label>
+            <input
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+              placeholder="2024.03 – 2024.08"
+              className="w-full rounded-lg border border-border bg-card px-4 py-2.5 focus:border-accent focus:outline-none"
+            />
+          </div>
+        )}
         <input
           value={roleEn}
           onChange={(e) => setRoleEn(e.target.value)}
