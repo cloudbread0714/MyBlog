@@ -107,6 +107,29 @@
     "englishBody": "영문 본문",
     "fallbackNote": "영문이 비어 있으면 한국어가 표시됩니다."
   },
+  "pdf": {
+    "title": "발표 · 자료",
+    "description": "학교 발표, 과제 등 파일을 모아 둡니다. URL로만 접근합니다.",
+    "empty": "아직 올린 파일이 없습니다.",
+    "loginToUpload": "파일 업로드는 로그인 후 가능합니다.",
+    "uploadTitle": "파일 업로드",
+    "displayName": "표시 이름 (선택)",
+    "displayNamePlaceholder": "비우면 파일 이름 사용",
+    "note": "메모 (선택)",
+    "notePlaceholder": "예: 3주차 발표 자료",
+    "chooseFiles": "파일 선택",
+    "uploading": "업로드 중…",
+    "upload": "업로드",
+    "open": "열기",
+    "download": "다운로드",
+    "delete": "삭제",
+    "deleting": "삭제 중…",
+    "confirmDelete": "이 파일을 삭제할까요?",
+    "uploadError": "업로드에 실패했습니다.",
+    "deleteError": "삭제에 실패했습니다.",
+    "dropHint": "여기에 파일을 끌어다 놓거나 버튼으로 선택하세요.",
+    "formats": "PDF, PPT, Word, Excel, ZIP, HWP 등"
+  },
   "footer": {
     "built": "Next.js + Supabase"
   },

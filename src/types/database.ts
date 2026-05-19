@@ -53,6 +53,19 @@ export type PageContent = {
   updated_at: string;
 };
 
+export type PdfFile = {
+  id: string;
+  title: string;
+  file_name: string;
+  file_url: string;
+  file_path: string;
+  file_size: number | null;
+  mime_type: string | null;
+  note: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type PostInsert = Pick<Post, "title" | "content" | "tags" | "thumbnail" | "category">;
 export type ProjectInsert = Pick<
   Project,

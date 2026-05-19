@@ -21,7 +21,7 @@ export function LanguageToggle({ locale }: { locale: Locale }) {
   return (
     <div
       className={cn(
-        "ml-1 flex rounded-md border border-border p-0.5 font-mono text-[10px]",
+        "ml-1 flex rounded-md border border-border p-0.5 font-mono text-xs",
         pending && "opacity-60",
       )}
       role="group"
@@ -34,7 +34,7 @@ export function LanguageToggle({ locale }: { locale: Locale }) {
           disabled={pending}
           onClick={() => switchLocale(code)}
           className={cn(
-            "rounded px-2 py-1 uppercase tracking-wide transition-colors",
+            "rounded px-2.5 py-1.5 text-sm uppercase tracking-wide transition-colors",
             locale === code
               ? "bg-foreground text-background"
               : "text-muted hover:text-foreground",

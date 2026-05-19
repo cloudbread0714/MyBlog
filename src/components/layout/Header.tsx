@@ -22,28 +22,28 @@ export async function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background">
-      <div className="mx-auto flex h-14 max-w-3xl items-center justify-between px-5 sm:px-8">
+      <div className="mx-auto flex h-16 max-w-3xl items-center justify-between px-5 sm:px-8">
         <Link
           href="/"
-          className="group flex items-center gap-2 font-mono text-sm font-medium tracking-tight"
+          className="group flex items-center gap-2.5 font-mono text-base font-medium tracking-tight"
         >
-          <span className="flex h-7 w-7 items-center justify-center rounded-md border border-border bg-card text-xs text-accent transition-colors group-hover:border-accent/40">
+          <span className="flex h-8 w-8 items-center justify-center rounded-md border border-border bg-card text-sm text-accent transition-colors group-hover:border-accent/40">
             {"</>"}
           </span>
           <span className="hidden sm:inline">yujin.dev</span>
         </Link>
-        <nav className="flex items-center gap-0.5">
+        <nav className="flex items-center gap-1">
           {nav.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="hidden rounded-md px-2.5 py-1.5 font-mono text-xs text-foreground/75 transition-colors hover:bg-card hover:text-foreground sm:inline-block"
+              className="hidden rounded-md px-3 py-2 font-mono text-sm text-foreground/75 transition-colors hover:bg-card hover:text-foreground sm:inline-block"
             >
               {item.label}
             </Link>
           ))}
           {user && (
-            <Link href="/write" className="btn-primary ml-1 !py-1.5 !text-xs">
+            <Link href="/write" className="btn-primary ml-1 !py-2 !text-sm">
               {t.nav.write}
             </Link>
           )}
@@ -53,7 +53,7 @@ export async function Header() {
             <form action="/auth/signout" method="post" className="ml-0.5">
               <button
                 type="submit"
-                className="rounded-md px-2 py-1.5 font-mono text-xs text-foreground/75 transition-colors hover:text-foreground"
+                className="rounded-md px-2.5 py-2 font-mono text-sm text-foreground/75 transition-colors hover:text-foreground"
               >
                 {t.nav.logout}
               </button>
@@ -61,7 +61,7 @@ export async function Header() {
           ) : (
             <Link
               href="/login"
-              className="ml-0.5 rounded-md px-2 py-1.5 font-mono text-xs text-foreground/75 transition-colors hover:text-foreground"
+              className="ml-0.5 rounded-md px-2.5 py-2 font-mono text-sm text-foreground/75 transition-colors hover:text-foreground"
             >
               {t.nav.login}
             </Link>

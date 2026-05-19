@@ -107,6 +107,29 @@
     "englishBody": "English body",
     "fallbackNote": "Korean is shown when English is empty."
   },
+  "pdf": {
+    "title": "Presentations & files",
+    "description": "School presentations and assignments. This page is URL-only (not in the menu).",
+    "empty": "No files uploaded yet.",
+    "loginToUpload": "Sign in to upload files.",
+    "uploadTitle": "Upload files",
+    "displayName": "Display name (optional)",
+    "displayNamePlaceholder": "Uses file name if empty",
+    "note": "Note (optional)",
+    "notePlaceholder": "e.g. Week 3 presentation",
+    "chooseFiles": "Choose files",
+    "uploading": "Uploading…",
+    "upload": "Upload",
+    "open": "Open",
+    "download": "Download",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "confirmDelete": "Delete this file?",
+    "uploadError": "Upload failed.",
+    "deleteError": "Delete failed.",
+    "dropHint": "Drag files here or use the button below.",
+    "formats": "PDF, PPT, Word, Excel, ZIP, HWP, etc."
+  },
   "footer": {
     "built": "Next.js + Supabase"
   },
