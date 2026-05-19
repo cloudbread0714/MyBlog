@@ -251,7 +251,7 @@ export function PdfLibrary({
                     </a>
                   )}
                   <a
-                    href={file.file_url}
+                    href={`/api/pdf/download?id=${file.id}`}
                     download={file.file_name}
                     className="btn-primary !py-2 !text-sm"
                   >
