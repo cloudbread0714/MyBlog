@@ -67,7 +67,7 @@ export function HomeAvatar({
           : "flex shrink-0 flex-col items-center gap-3 sm:items-start"
       }
     >
-      <div className="relative mx-auto w-full sm:mx-0">
+      <div className={`relative mx-auto w-full sm:mx-0 ${compact ? "pb-3 pr-3" : ""}`}>
         <div
           className={`aspect-square w-full overflow-hidden rounded-2xl border-2 border-border bg-card shadow-md ring-1 ring-black/5 dark:ring-white/10 ${
             compact ? "" : "max-h-44 max-w-[11rem]"

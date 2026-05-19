@@ -28,10 +28,12 @@ export function HomeHero({
 }: HomeHeroProps) {
   return (
     <section className="mb-20">
-      <div className="grid grid-cols-1 gap-8 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-start sm:gap-10">
-        <HomeAvatar avatarUrl={avatarUrl} isAdmin={isAdmin} labels={homeLabels} compact />
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-[11rem_minmax(0,1fr)] sm:items-stretch sm:gap-10">
+        <div className="flex items-center justify-center sm:justify-start">
+          <HomeAvatar avatarUrl={avatarUrl} isAdmin={isAdmin} labels={homeLabels} compact />
+        </div>
 
-        <div className="relative min-w-0 sm:pt-0.5">
+        <div className="relative flex min-w-0 flex-col justify-center">
           <EditablePage
             slug={slug}
             initialContentKo={initialContentKo}
