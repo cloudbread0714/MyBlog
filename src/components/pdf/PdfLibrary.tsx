@@ -1,7 +1,6 @@
 "use client";
 
 import { ExternalLink, FileText, Trash2, Upload } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import type { Dictionary } from "@/i18n/dictionary";
@@ -211,14 +210,7 @@ export function PdfLibrary({
             )}
           </div>
         </section>
-      ) : (
-        <p className="rounded-lg border border-dashed border-border px-4 py-3 font-mono text-sm text-muted">
-          {labels.loginToUpload}{" "}
-          <Link href="/login?redirect=/pdf" className="text-accent underline-offset-2 hover:underline">
-            {locale === "ko" ? "로그인" : "Sign in"}
-          </Link>
-        </p>
-      )}
+      ) : null}
 
       {error && <p className="text-sm text-red-500">{error}</p>}
 

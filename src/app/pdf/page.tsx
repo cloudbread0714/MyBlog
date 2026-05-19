@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { PdfFile } from "@/types/database";
 
 export const metadata = {
-  title: "발표 · 자료 | Dev Blog",
+  title: "자료 | Dev Blog",
   robots: { index: false, follow: false },
 };
 
@@ -24,11 +24,7 @@ export default async function PdfPage() {
   return (
     <>
       <header className="mb-10">
-        <p className="section-eyebrow font-mono text-xs uppercase tracking-wide text-accent">
-          Files
-        </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight">{t.pdf.title}</h1>
-        <p className="mt-3 text-muted">{t.pdf.description}</p>
+        <h1 className="text-3xl font-bold tracking-tight">{t.pdf.title}</h1>
       </header>
 
       <PdfLibrary

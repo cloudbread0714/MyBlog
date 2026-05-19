@@ -108,15 +108,13 @@
     "fallbackNote": "Korean is shown when English is empty."
   },
   "pdf": {
-    "title": "Presentations & files",
-    "description": "School presentations and assignments. URL-only (not in the menu). Upload requires sign-in; guests can download only.",
+    "title": "Files",
     "empty": "No files uploaded yet.",
-    "loginToUpload": "Sign in to upload files.",
     "uploadTitle": "Upload files",
     "displayName": "Display name (optional)",
     "displayNamePlaceholder": "Uses file name if empty",
     "note": "Note (optional)",
-    "notePlaceholder": "e.g. Week 3 presentation",
+    "notePlaceholder": "e.g. Week 3",
     "chooseFiles": "Choose files",
     "uploading": "Uploading…",
     "upload": "Upload",

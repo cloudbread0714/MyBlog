@@ -108,15 +108,13 @@
     "fallbackNote": "영문이 비어 있으면 한국어가 표시됩니다."
   },
   "pdf": {
-    "title": "발표 · 자료",
-    "description": "학교 발표, 과제 등 파일을 모아 둡니다. URL로만 접근합니다. 업로드는 로그인 후, 비로그인 시 다운로드만 가능합니다.",
+    "title": "자료",
     "empty": "아직 올린 파일이 없습니다.",
-    "loginToUpload": "파일 업로드는 로그인 후 가능합니다.",
     "uploadTitle": "파일 업로드",
     "displayName": "표시 이름 (선택)",
     "displayNamePlaceholder": "비우면 파일 이름 사용",
     "note": "메모 (선택)",
-    "notePlaceholder": "예: 3주차 발표 자료",
+    "notePlaceholder": "예: 3주차 자료",
     "chooseFiles": "파일 선택",
     "uploading": "업로드 중…",
     "upload": "업로드",
