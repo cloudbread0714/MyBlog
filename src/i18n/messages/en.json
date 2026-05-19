@@ -120,6 +120,8 @@
     "upload": "Upload",
     "open": "Open",
     "download": "Download",
+    "downloading": "Downloading…",
+    "downloadError": "Download failed. Please try again.",
     "delete": "Delete",
     "deleting": "Deleting…",
     "confirmDelete": "Delete this file?",

@@ -32,6 +32,7 @@ export function PdfLibrary({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [dragOver, setDragOver] = useState(false);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const addPending = (list: FileList | File[] | null) => {
     if (!list?.length) return;
@@ -85,6 +86,29 @@ export function PdfLibrary({
       setError(e instanceof Error ? e.message : labels.uploadError);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const downloadFile = async (file: PdfFile) => {
+    setDownloadingId(file.id);
+    setError("");
+    try {
+      const res = await fetch(`/api/pdf/download?id=${file.id}`);
+      if (!res.ok) throw new Error(labels.downloadError);
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = file.file_name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setError(labels.downloadError);
+    } finally {
+      setDownloadingId(null);
     }
   };
 
@@ -250,13 +274,14 @@ export function PdfLibrary({
                       {labels.open}
                     </a>
                   )}
-                  <a
-                    href={`/api/pdf/download?id=${file.id}`}
-                    download={file.file_name}
-                    className="btn-primary !py-2 !text-sm"
+                  <button
+                    type="button"
+                    onClick={() => void downloadFile(file)}
+                    disabled={downloadingId === file.id}
+                    className="btn-primary !py-2 !text-sm disabled:opacity-50"
                   >
-                    {labels.download}
-                  </a>
+                    {downloadingId === file.id ? labels.downloading : labels.download}
+                  </button>
                   {isAdmin && (
                     <button
                       type="button"
