@@ -1,5 +1,4 @@
 import type { Locale } from "@/i18n/config";
-import { createClient } from "@/lib/supabase/server";
 
 export type PostCategoryRow = {
   slug: string;
@@ -14,17 +13,6 @@ export const FALLBACK_CATEGORIES: PostCategoryRow[] = [
   { slug: "project", label_ko: "프로젝트 회고", label_en: "Project notes", sort_order: 2 },
   { slug: "etc", label_ko: "기타", label_en: "Other", sort_order: 99 },
 ];
-
-export async function getPostCategories(): Promise<PostCategoryRow[]> {
-  const supabase = await createClient();
-  const { data } = await supabase
-    .from("post_categories")
-    .select("*")
-    .order("sort_order", { ascending: true });
-
-  if (data?.length) return data as PostCategoryRow[];
-  return FALLBACK_CATEGORIES;
-}
 
 export function getCategoryLabel(
   categories: PostCategoryRow[],

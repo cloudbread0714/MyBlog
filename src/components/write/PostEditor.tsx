@@ -57,7 +57,7 @@ export function PostEditor({
         /* ignore */
       }
     }
-  }, []);
+  }, [defaultSlug]);
 
   useEffect(() => {
     const timer = setTimeout(() => {

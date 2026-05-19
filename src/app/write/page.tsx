@@ -3,7 +3,7 @@ import { PostEditor } from "@/components/write/PostEditor";
 import { getIsAdmin } from "@/lib/auth";
 import { getDictionary } from "@/i18n/dictionary";
 import { getLocale } from "@/i18n/locale";
-import { getPostCategories } from "@/lib/post-categories";
+import { getPostCategories } from "@/lib/post-categories.server";
 
 export const metadata = {
   title: "글 작성 | Dev Blog",

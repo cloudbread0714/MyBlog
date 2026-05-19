@@ -5,7 +5,7 @@ import { getIsAdmin } from "@/lib/auth";
 import { localizePost } from "@/i18n/content";
 import { getDictionary } from "@/i18n/dictionary";
 import { getLocale } from "@/i18n/locale";
-import { getPostCategories } from "@/lib/post-categories";
+import { getPostCategories } from "@/lib/post-categories.server";
 import { PAGE_SLUGS } from "@/lib/page-defaults";
 import { getPageContentForEdit } from "@/lib/pages";
 import { createClient } from "@/lib/supabase/server";

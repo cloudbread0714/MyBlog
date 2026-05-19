@@ -4,7 +4,7 @@ import { EditablePost } from "@/components/cms/EditablePost";
 import { getIsAdmin } from "@/lib/auth";
 import { getDictionary } from "@/i18n/dictionary";
 import { getLocale } from "@/i18n/locale";
-import { getPostCategories } from "@/lib/post-categories";
+import { getPostCategories } from "@/lib/post-categories.server";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, readingTime } from "@/lib/utils";
 
