@@ -2,13 +2,20 @@ import { createClient } from "@/lib/supabase/client";
 
 const BUCKET = "documents";
 
-function sanitizeFileName(name: string): string {
-  return name.replace(/[^a-zA-Z0-9._-가-힣]/g, "_").slice(0, 120);
+/** Supabase Storage는 ASCII 파일명만 허용 (한글 등은 InvalidKey 오류) */
+function storageObjectPath(file: File): string {
+  const rawExt = file.name.includes(".") ? file.name.slice(file.name.lastIndexOf(".")) : "";
+  const ext = rawExt.toLowerCase().replace(/[^a-z0-9.]/g, "") || ".bin";
+  const id =
+    typeof crypto !== "undefined" && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  return `files/${id}${ext}`;
 }
 
 export async function uploadDocument(file: File): Promise<{ url: string; path: string }> {
   const supabase = createClient();
-  const path = `files/${Date.now()}-${sanitizeFileName(file.name)}`;
+  const path = storageObjectPath(file);
 
   const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
     cacheControl: "3600",

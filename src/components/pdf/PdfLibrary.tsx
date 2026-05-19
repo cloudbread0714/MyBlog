@@ -214,7 +214,7 @@ export function PdfLibrary({
       ) : (
         <p className="rounded-lg border border-dashed border-border px-4 py-3 font-mono text-sm text-muted">
           {labels.loginToUpload}{" "}
-          <Link href="/login" className="text-accent underline-offset-2 hover:underline">
+          <Link href="/login?redirect=/pdf" className="text-accent underline-offset-2 hover:underline">
             {locale === "ko" ? "로그인" : "Sign in"}
           </Link>
         </p>
@@ -247,19 +247,21 @@ export function PdfLibrary({
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2 sm:shrink-0">
-                  <a
-                    href={file.file_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-secondary !py-2 !text-sm"
-                  >
-                    <ExternalLink className="h-3.5 w-3.5" />
-                    {labels.open}
-                  </a>
+                  {isAdmin && (
+                    <a
+                      href={file.file_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-secondary !py-2 !text-sm"
+                    >
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      {labels.open}
+                    </a>
+                  )}
                   <a
                     href={file.file_url}
                     download={file.file_name}
-                    className="btn-secondary !py-2 !text-sm"
+                    className="btn-primary !py-2 !text-sm"
                   >
                     {labels.download}
                   </a>

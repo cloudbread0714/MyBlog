@@ -109,7 +109,7 @@
   },
   "pdf": {
     "title": "Presentations & files",
-    "description": "School presentations and assignments. This page is URL-only (not in the menu).",
+    "description": "School presentations and assignments. URL-only (not in the menu). Upload requires sign-in; guests can download only.",
     "empty": "No files uploaded yet.",
     "loginToUpload": "Sign in to upload files.",
     "uploadTitle": "Upload files",
